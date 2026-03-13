@@ -1,0 +1,153 @@
+/* ════════════════════════════════════
+   VARIABLES — cambiá los colores aquí
+════════════════════════════════════ */
+:root {
+    --azul-oscuro:  #0a1628;
+    --azul-medio:   #0d3b66;
+    --azul-acento:  #1a6fc4;
+    --dorado:       #f0a500;
+    --texto-muted:  #8fa3bc;
+    --fondo-pagina: #f0f4f9;
+}
+
+/* ════════════════════════════════════
+   BASE
+════════════════════════════════════ */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--fondo-pagina);
+    margin: 0;
+    padding: 0;
+}
+
+/* ════════════════════════════════════
+   SECCIÓN INICIO — imagen de fondo + overlay
+   Contiene el navbar y el hero-content
+════════════════════════════════════ */
+.Inicio {
+    background-image:
+            linear-gradient(
+                    to bottom,
+                    rgba(10, 22, 40, 0.80) 0%,
+                    rgba(10, 22, 40, 0.65) 55%,
+                    rgba(10, 22, 40, 0.88) 100%
+            ),
+            url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=80&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ════════════════════════════════════
+   NAVBAR
+════════════════════════════════════ */
+.navbar-custom {
+    background-color: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 16px 0;
+}
+
+/* Logo / brand — el <p> con la imagen */
+.navbar-custom p {
+    color: #ffffff;
+    font-size: 18px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Links del menú */
+.navbar-custom .nav-link {
+    color: rgba(255, 255, 255, 0.80);
+    font-size: 14px;
+    padding: 6px 14px;
+    transition: color 0.2s ease;
+}
+
+.navbar-custom .nav-link:hover {
+    color: var(--dorado);
+}
+
+/* El último link (Login) con estilo de botón */
+.navbar-custom .nav-link:last-child {
+    background-color: var(--dorado);
+    color: var(--azul-oscuro) !important;
+    border-radius: 6px;
+    font-weight: bold;
+    padding: 7px 20px;
+    margin-left: 8px;
+}
+
+.navbar-custom .nav-link:last-child:hover {
+    background-color: #d4920a;
+}
+
+/* ════════════════════════════════════
+   HERO — texto central sobre la imagen
+════════════════════════════════════ */
+.hero-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 20px 70px;
+}
+
+.hero-eyebrow {
+    color: var(--dorado);
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+.hero-title {
+    color: #ffffff;
+    font-size: 46px;
+    font-weight: bold;
+    line-height: 1.2;
+    margin-bottom: 0;
+}
+
+/* ════════════════════════════════════
+   BÚSQUEDA RÁPIDA — flota sobre el hero
+════════════════════════════════════ */
+.busqueda-rapida {
+    margin-top: -32px;     /* sube la card para solapar el hero */
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 10;           /* se dibuja encima del hero */
+}
+
+.busqueda-rapida .card {
+    border: none;
+    border-top: 4px solid var(--azul-medio);
+    border-radius: 10px;
+    box-shadow: 0 6px 24px rgba(13, 59, 102, 0.18);
+}
+
+.busqueda-rapida h5 {
+    color: var(--azul-oscuro);
+}
+
+/* ════════════════════════════════════
+   FOOTER
+════════════════════════════════════ */
+footer {
+    background-color: var(--azul-oscuro);
+    color: var(--texto-muted);
+    padding: 26px 0;
+    margin-top: 60px;
+    font-size: 14px;
+    border-top: 3px solid var(--dorado);
+}
+
+footer strong {
+    color: #ffffff;
+}
