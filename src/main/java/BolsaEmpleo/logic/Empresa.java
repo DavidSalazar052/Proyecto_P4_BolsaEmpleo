@@ -1,4 +1,4 @@
-package BolsaEmpleo.data.entity;
+package BolsaEmpleo.logic;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -13,15 +13,16 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class Oferente {
+public class Empresa {
     @Id
     private String id;
+
     private String nombre;
-    private String apellido;
-    private String nacionalidad;
-    private String telefono;
+    private String localizacion;
     private String correo;
+    private String telefono;
+    private String descripcion;
 
     //Para que el Administrador la apruebe
-    private boolean aprobado = false;
+    private boolean aprobada = false;
 }

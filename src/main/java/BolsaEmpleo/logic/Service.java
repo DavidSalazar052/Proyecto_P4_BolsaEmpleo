@@ -2,9 +2,7 @@ package BolsaEmpleo.logic;
 
 import BolsaEmpleo.data.AdministradorRepository;
 import BolsaEmpleo.data.EmpresaRepository;
-import BolsaEmpleo.data.entity.Administrador;
-import BolsaEmpleo.data.entity.Empresa;
-import BolsaEmpleo.data.entity.Oferente;
+import BolsaEmpleo.data.CaracteristicasRepository;
 import BolsaEmpleo.data.OferentesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,6 +16,10 @@ public class Service {
     private EmpresaRepository Emp_Repo;
     @Autowired
     private OferentesRepository Ofe_Repo;
+    @Autowired
+    private CaracteristicasRepository Carac_Repo;
+
+//ENTIDADES PRINCIPALES
 
     //--ADMINISTRADORES--
     public List<Administrador> findAll_Administradores(){
@@ -48,4 +50,15 @@ public class Service {
             throw new IllegalArgumentException("Un Oferente ya esta registrado con esta ID");
         }
     }
+
+    //--CARACTERISTICAS--
+    public List<Caracteristicas> findAll_Caracteristicas(){
+        return Carac_Repo.findAll();
+    }
+    public void CaracteristicasAdd(Caracteristicas caracteristicas){
+        if(Carac_Repo.existsById(caracteristicas.getId())){
+            throw new IllegalArgumentException("Ya existe esta caracteristica");
+        }
+    }
+
 }
