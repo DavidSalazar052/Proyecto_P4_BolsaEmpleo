@@ -1,0 +1,60 @@
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.Inicio {
+    background-image:
+            linear-gradient(
+                    to bottom,
+                    rgba(10, 22, 40, 0.80) 0%,
+                    rgba(10, 22, 40, 0.65) 55%,
+                    rgba(10, 22, 40, 0.88) 100%
+            ),
+            url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=80&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+.navbar-custom .nav-link {
+    color: rgba(255, 255, 255, 0.80);
+    font-size: 14px;
+    padding: 6px 14px;
+    transition: color 0.2s ease;
+}
+
+.contenedor {
+    width: 500px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: lightgray;
+}
+
+
+
+
+
+.categoria {
+    margin-left: 20px;
+
+}
+
+button {
+    padding: 6px 12px;
+    margin-right: 5px;
+}
+.tarjeta-puesto{
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;
+}
