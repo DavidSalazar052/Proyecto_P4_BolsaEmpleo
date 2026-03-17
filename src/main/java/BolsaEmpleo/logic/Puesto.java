@@ -1,11 +1,9 @@
 package BolsaEmpleo.logic;
 
-import java.util.List;
-
+import BolsaEmpleo.logic.Base.Empresa;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,17 +15,13 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PuestoEmpresa {
+public class Puesto {
     @Id
     private String id;
 
     @ManyToOne
     @JoinColumn(name = "empresa_id")
     private Empresa empresa;
-
-    @ManyToMany
-    @JoinColumn(name = "habilidad_id")
-    List<HabilidadEmpresa> habilidades;
 
     private String descripcion;
     private Integer salario;

@@ -1,9 +1,9 @@
 package BolsaEmpleo.data;
-import BolsaEmpleo.logic.PuestoHabilidad;
+import BolsaEmpleo.logic.PuestoHabilidades;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface PuestoHabilidadRepository extends JpaRepository<PuestoHabilidad, String> {
+public interface PuestoHabilidadRepository extends JpaRepository<PuestoHabilidades, String> {
 
 }

@@ -1,4 +1,4 @@
-package BolsaEmpleo.logic;
+package BolsaEmpleo.logic.Base;
 
 
 import jakarta.persistence.Entity;

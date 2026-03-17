@@ -1,4 +1,4 @@
-package BolsaEmpleo.logic;
+package BolsaEmpleo.logic.Base;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -13,16 +13,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class Empresa {
+public class Administrador extends Usuario {
     @Id
-    private String id;
+    private String id;//PK FK
 
+    private String identificacion; // cedula
     private String nombre;
-    private String localizacion;
     private String correo;
-    private String telefono;
-    private String descripcion;
 
-    //Para que el Administrador la apruebe
-    private boolean aprobada = false;
+
 }

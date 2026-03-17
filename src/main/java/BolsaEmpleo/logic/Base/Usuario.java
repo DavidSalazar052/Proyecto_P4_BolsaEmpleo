@@ -1,4 +1,4 @@
-package BolsaEmpleo.logic;
+package BolsaEmpleo.logic.Base;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -13,12 +13,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class Administrador {
+
+public abstract class Usuario {
     @Id
     private String id;
 
-    private String nombre;
-    private String identificacion;
-
-
+    private String username;
+    private String clave;
+    private String tipo;
 }

@@ -7,6 +7,10 @@ import BolsaEmpleo.data.OferentesRepository;
 import BolsaEmpleo.data.PuestoEmpresaRepository;
 import BolsaEmpleo.data.PuestoHabilidadRepository;
 
+import BolsaEmpleo.logic.Base.Administrador;
+import BolsaEmpleo.logic.Base.Caracteristicas;
+import BolsaEmpleo.logic.Base.Empresa;
+import BolsaEmpleo.logic.Base.Oferente;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -69,22 +73,22 @@ public class Service {
     }
 
         //--PUESTO EMPRESA--
-    public List<PuestoEmpresa> findAll_puesto_emp(){
+    public List<Puesto> findAll_puesto_emp(){
         return Puesto_emp_Repo.findAll();
     }
 
-    public void Puesto_emp_Add(PuestoEmpresa puestoEmp){
+    public void Puesto_emp_Add(Puesto puestoEmp){
         if(Puesto_emp_Repo.existsById(puestoEmp.getId())){
             throw new IllegalArgumentException("El puesto para esta empresa ya existe");
         }
     }
 
             //--PUESTO HABILIDAD--
-    public List<PuestoHabilidad> findAll_puesto_hab(){
+    public List<PuestoHabilidades> findAll_puesto_hab(){
         return Puesto_hab_Repo.findAll();
     }
 
-    public void Puesto_hab_Add(PuestoHabilidad puestoEmp){
+    public void Puesto_hab_Add(PuestoHabilidades puestoEmp){
         if(Puesto_hab_Repo.existsById(puestoEmp.getId())){
             throw new IllegalArgumentException("Esta habilidad ya esta asociada al puesto");
         }

@@ -1,5 +1,6 @@
 package BolsaEmpleo.logic;
 
+import BolsaEmpleo.logic.Base.Caracteristicas;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -15,13 +16,13 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PuestoHabilidad {
+public class PuestoHabilidades {
     @Id
     private String id;
 
     @ManyToOne
     @JoinColumn(name = "puesto_id")
-    private  PuestoEmpresa puesto;
+    private Puesto puesto;
 
     @OneToOne
     @JoinColumn(name = "caracteristica_id")
