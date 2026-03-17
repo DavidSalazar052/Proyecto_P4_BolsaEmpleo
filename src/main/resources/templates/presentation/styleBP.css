@@ -58,3 +58,17 @@ button {
     justify-content: center;
     padding: 10px;
 }
+.navbar-custom p {
+    color: #ffffff;
+    font-size: 18px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.navbar-custom .nav-link {
+    color: rgba(255, 255, 255, 0.80);
+    font-size: 14px;
+    padding: 6px 14px;
+    transition: color 0.2s ease;
+}
