@@ -4,6 +4,9 @@ import BolsaEmpleo.data.AdministradorRepository;
 import BolsaEmpleo.data.EmpresaRepository;
 import BolsaEmpleo.data.CaracteristicasRepository;
 import BolsaEmpleo.data.OferentesRepository;
+import BolsaEmpleo.data.PuestoEmpresaRepository;
+import BolsaEmpleo.data.PuestoHabilidadRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -18,6 +21,10 @@ public class Service {
     private OferentesRepository Ofe_Repo;
     @Autowired
     private CaracteristicasRepository Carac_Repo;
+     @Autowired
+    private PuestoEmpresaRepository Puesto_emp_Repo;
+      @Autowired
+    private PuestoHabilidadRepository Puesto_hab_Repo; 
 
 //ENTIDADES PRINCIPALES
 
@@ -58,6 +65,28 @@ public class Service {
     public void CaracteristicasAdd(Caracteristicas caracteristicas){
         if(Carac_Repo.existsById(caracteristicas.getId())){
             throw new IllegalArgumentException("Ya existe esta caracteristica");
+        }
+    }
+
+        //--PUESTO EMPRESA--
+    public List<PuestoEmpresa> findAll_puesto_emp(){
+        return Puesto_emp_Repo.findAll();
+    }
+
+    public void Puesto_emp_Add(PuestoEmpresa puestoEmp){
+        if(Puesto_emp_Repo.existsById(puestoEmp.getId())){
+            throw new IllegalArgumentException("El puesto para esta empresa ya existe");
+        }
+    }
+
+            //--PUESTO HABILIDAD--
+    public List<PuestoHabilidad> findAll_puesto_hab(){
+        return Puesto_hab_Repo.findAll();
+    }
+
+    public void Puesto_hab_Add(PuestoHabilidad puestoEmp){
+        if(Puesto_hab_Repo.existsById(puestoEmp.getId())){
+            throw new IllegalArgumentException("Esta habilidad ya esta asociada al puesto");
         }
     }
 

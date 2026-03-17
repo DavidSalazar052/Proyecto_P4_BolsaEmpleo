@@ -19,7 +19,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PuestoEmpresa {
     @Id
-    private Integer id;
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "empresa_id")
