@@ -1,7 +1,10 @@
 package BolsaEmpleo.logic.Base;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,9 +16,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class Oferente extends Usuario {
+public class Oferente {
     @Id
     private String id;
+
+    @OneToOne
+    @JoinColumn
+    private Usuario usuario;
 
     private String nombre;
     private String apellido;
