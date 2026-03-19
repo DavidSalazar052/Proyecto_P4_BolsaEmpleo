@@ -152,9 +152,76 @@ footer strong {
     color: #ffffff;
 }
 
+
+
+
+
 /*  Buscar puesto  */
 
-.categoria {
-    margin-left: 20px;
-
+.contenedor-filtros {
+    background-color: #f4f4f4;
+    padding: 25px;
+    border-radius: 4px;
+    width: 350px; /* Ajusta según necesites */
+    font-family: Arial, sans-serif;
 }
+
+.grupo-categoria {
+    margin-bottom: 12px;
+}
+
+/* Alineación de checkbox y texto en la misma línea */
+.categoria-padre, .item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+/* La clave: Mueve los hijos a la derecha */
+.sub-opciones {
+    margin-left: 28px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilo visual para los checks y labels */
+input[type="checkbox"] {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+label {
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* Botones como en la imagen */
+.seccion-botones {
+    margin-top: 20px;
+}
+
+.btn-azul {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 6px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-blanco {
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 6px 15px;
+    border-radius: 4px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.seccion-scroll {
+    max-height: 300px;    /* Ajusta este número (p.ej. 400px) según qué tan alto quieras el cuadro */
+    overflow-y: auto;     /* Activa el desplazamiento con la rueda del ratón */
+    padding-right: 10px;  /* Espacio para que la barra de scroll no tape el texto */
+    margin-bottom: 15px;
+}
+

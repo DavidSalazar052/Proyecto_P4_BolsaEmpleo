@@ -72,3 +72,40 @@ button {
     padding: 6px 14px;
     transition: color 0.2s ease;
 }
+
+.contenedor-checks {
+    background-color: #f4f4f4; /* Fondo gris claro de la imagen */
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.grupo-categoria {
+    margin-bottom: 12px;
+}
+
+.categoria-principal {
+    display: flex;
+    align-items: center;
+    font-weight: bold; /* Para resaltar la categoría padre */
+}
+
+.sub-opciones {
+    margin-left: 25px; /* Crea la sangría para los hijos */
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Espacio vertical entre JUnit y Assertions */
+}
+
+.item {
+    display: flex;
+    align-items: center;
+}
+
+input[type="checkbox"] {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+label {
+    cursor: pointer;
+}
