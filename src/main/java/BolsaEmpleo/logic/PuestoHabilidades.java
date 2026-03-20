@@ -1,17 +1,14 @@
 package BolsaEmpleo.logic;
 
 import BolsaEmpleo.logic.Base.Caracteristicas;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "puesto_habilidades")
 @Getter
 @Setter
 @AllArgsConstructor

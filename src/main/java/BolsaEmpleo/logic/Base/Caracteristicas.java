@@ -1,16 +1,14 @@
 package BolsaEmpleo.logic.Base;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "caracteristicas")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,7 +20,7 @@ public class Caracteristicas {
     private String nombre;
     // esto me lo tiro el Intellij para el tema de la relación ciclica (josue)
     @ManyToOne
-    @JoinColumn(name = "padre_id")
+    @JoinColumn(name = "padre_id") // ← relación cíclica, está bien
     private Caracteristicas Padre;
 
 

@@ -1,16 +1,14 @@
 package BolsaEmpleo.logic;
 
 import BolsaEmpleo.logic.Base.Empresa;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "puesto")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,8 +23,8 @@ public class Puesto {
 
     private String descripcion;
     private Integer salario;
-    private String tipo;
-    private String estado;
+    private String tipo;    // PUBLICO | PRIVADO
+    private String estado; //"ACTIVO" | "INACTIVO"
     private String fecha;
 
 }

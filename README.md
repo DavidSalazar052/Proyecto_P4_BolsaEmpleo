@@ -12,6 +12,7 @@ Evitemos el uso de IA ya que la estructura de sanchez es muy delicada entonces s
 
 ESTRUCTURA DEL PROYECTO
 
+ARCHIVO JAVA
 ├── data/
 │   ├── UsuarioRepository.java
 │   ├── EmpresaRepository.java
@@ -29,4 +30,37 @@ ESTRUCTURA DEL PROYECTO
 │   ├── Caracteristica.java
 │   ├── PuestoCaracteristica.java
 │   ├── OferenteHabilidad.java
+
+
 │   └── Service.java
+
+----------------------------------------------------------------------
+
+RESOURCES
+resources/
+├── static/
+│   └── css/
+│       └── style.css               
+└── templates/
+└── presentation/
+    ├── fragmentPublic.html     
+    ├── viewpublic.html          
+    │
+    ├── login/
+    │   └── ViewLogin.html      
+    │
+    ├── admin/
+    │   ├── DashboardAdmin.html 
+    │   ├── EmpresasPendientes.html   
+    │   ├── OferentesPendientes.html  
+    │   └── Caracteristicas.html      
+    │
+    ├── empresa/
+    │   ├── DashboardEmpresa.html 
+    │   ├── MisPuestos.html       
+    │   └── NuevoPuesto.html      
+    │
+    └── oferente/
+    ├── DashboardOferente.html 
+    ├── MisHabilidades.html    
+    └── MiCV.html             

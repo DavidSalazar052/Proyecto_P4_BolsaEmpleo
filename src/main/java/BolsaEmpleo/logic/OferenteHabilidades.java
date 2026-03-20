@@ -2,15 +2,33 @@ package BolsaEmpleo.logic;
 
 import BolsaEmpleo.logic.Base.Caracteristicas;
 import BolsaEmpleo.logic.Base.Oferente;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import BolsaEmpleo.logic.Base.Usuario;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+
+@Entity                                // ← faltaba
+@Table(name = "oferente_habilidades")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 
 public class OferenteHabilidades {
 
     @Id
     private String id;
     @OneToOne
+    @JoinColumn(name = "oferente_id")
     private Oferente oferente;
+
     @OneToOne
+    @JoinColumn(name = "caracteristicas_id")
     private Caracteristicas caracteristicas;
+
+    private Integer nivel;
+
 }

@@ -1,15 +1,13 @@
 package BolsaEmpleo.logic.Base;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "empresa")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,7 +18,7 @@ public class Empresa {
     private String id;
 
     @OneToOne
-    @JoinColumn
+    @JoinColumn(name = "usuario_id")   // ← nombre explícito de la FK
     private Usuario usuario;
 
     private String nombre;

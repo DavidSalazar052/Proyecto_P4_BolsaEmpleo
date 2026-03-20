@@ -1,22 +1,18 @@
 package BolsaEmpleo.logic;
 
-import BolsaEmpleo.data.AdministradorRepository;
-import BolsaEmpleo.data.EmpresaRepository;
-import BolsaEmpleo.data.CaracteristicasRepository;
-import BolsaEmpleo.data.OferentesRepository;
-import BolsaEmpleo.data.PuestoEmpresaRepository;
-import BolsaEmpleo.data.PuestoHabilidadRepository;
+import BolsaEmpleo.data.*;
 
-import BolsaEmpleo.logic.Base.Administrador;
-import BolsaEmpleo.logic.Base.Caracteristicas;
-import BolsaEmpleo.logic.Base.Empresa;
-import BolsaEmpleo.logic.Base.Oferente;
+import BolsaEmpleo.logic.Base.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
 import java.util.List;
 @org.springframework.stereotype.Service
 public class Service {
+    //ENTIDADES BASES
+
+    @Autowired
+    private UsuarioRepository usuario_Repo;
     @Autowired
     private AdministradorRepository Admi_Repo;
     @Autowired
@@ -25,12 +21,22 @@ public class Service {
     private OferentesRepository Ofe_Repo;
     @Autowired
     private CaracteristicasRepository Carac_Repo;
-     @Autowired
-    private PuestoEmpresaRepository Puesto_emp_Repo;
-      @Autowired
-    private PuestoHabilidadRepository Puesto_hab_Repo; 
 
-//ENTIDADES PRINCIPALES
+    //ENTIDADES CON FK
+    @Autowired
+    private PuestoRepository Puesto_Repo;
+    @Autowired
+    private PuestoHabilidadRepository Puesto_hab_Repo;
+    @Autowired
+    private OferenteHabilidadRepository Oferente_hab_Repo;
+
+
+
+    //--USUARIOS --
+    public Usuario Usuario_Login(String username, String clave){
+        Usuario result = usuario_Repo.findByUsername(username,clave);
+        return result;
+    }
 
     //--ADMINISTRADORES--
     public List<Administrador> findAll_Administradores(){
@@ -72,18 +78,23 @@ public class Service {
         }
     }
 
-        //--PUESTO EMPRESA--
+//ENTIDADES CON FK ---
+    //--PUESTO--
     public List<Puesto> findAll_puesto_emp(){
-        return Puesto_emp_Repo.findAll();
+        return Puesto_Repo.findAll();
     }
 
     public void Puesto_emp_Add(Puesto puestoEmp){
-        if(Puesto_emp_Repo.existsById(puestoEmp.getId())){
+        if(Puesto_Repo.existsById(puestoEmp.getId())){
             throw new IllegalArgumentException("El puesto para esta empresa ya existe");
         }
     }
+    public List<Puesto> Top5_PuestosRecientes(){
+        return null;
+    }
 
-            //--PUESTO HABILIDAD--
+
+    //--PUESTO HABILIDADES--
     public List<PuestoHabilidades> findAll_puesto_hab(){
         return Puesto_hab_Repo.findAll();
     }
@@ -92,6 +103,10 @@ public class Service {
         if(Puesto_hab_Repo.existsById(puestoEmp.getId())){
             throw new IllegalArgumentException("Esta habilidad ya esta asociada al puesto");
         }
+    }
+    //--OFERENTE HABILIDADES--
+    public List<OferenteHabilidades> findAll_Oferente_hab(){
+        return Oferente_hab_Repo.findAll();
     }
 
 }
