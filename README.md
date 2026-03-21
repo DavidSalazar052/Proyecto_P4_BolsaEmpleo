@@ -40,14 +40,14 @@ RESOURCES
 resources/
 ├── static/
 │   └── css/
-│       └── style.css               
+│       └── style.css     (LISTA)          
 └── templates/
 └── presentation/
-    ├── fragmentPublic.html     
-    ├── viewpublic.html          
-    │
+    ├── fragmentPublic.html  (LISTA)   
+    ├── viewpublic.html         (LISTA-FALTA OBJETOS)
+    ├── buscaPuesto.html        (LISTA-FALTA OBJETOS)
     ├── login/
-    │   └── ViewLogin.html      
+    │   └── ViewLogin.html     (LISTA-FALTA FUNCIONALIDAD) 
     │
     ├── admin/
     │   ├── DashboardAdmin.html 
