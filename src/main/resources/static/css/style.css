@@ -144,3 +144,23 @@ footer {
 footer strong {
     color: #ffffff;
 }
+
+.Caracteristica {
+    width: 60%;
+    border-collapse: collapse;
+}
+
+.Caracteristica th,
+.Caracteristica td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+}
+
+.Caracteristica th {
+    background-color: #e0e0e0;
+}
+
+.Caracteristica tr:nth-child(even) {
+    background-color: #f2f2f2;
+}

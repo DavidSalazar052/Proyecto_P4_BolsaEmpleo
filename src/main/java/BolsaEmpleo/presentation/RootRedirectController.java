@@ -1,13 +1,18 @@
 package BolsaEmpleo.presentation;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
+import BolsaEmpleo.logic.Service;;
 @Controller
 public class RootRedirectController {
+    @Autowired
+    private Service service;
+
     @GetMapping("/")
     public String redirectRoot(Model model){
+        model.addAttribute("caracteristicas",service.findAll_Caracteristicas());
         return "presentation/viewpublic"; // el redirect se usa para mandarlo al controller que lo dirige al html, pero se puede hacer de una vez (Alex)
     }
 }
