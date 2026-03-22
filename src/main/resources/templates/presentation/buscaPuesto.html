@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{presentation/fragmentPublic :: head}"></head>
+<body>
+
+
+<section class="Inicio">
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <p>
+                <img src="https://cdn-icons-png.flaticon.com/512/86/86155.png"
+                     alt="icono"
+                     style="width:50px;height:50px;filter: brightness(0) invert(1);">
+                <strong> Bolsa de Empleo</strong>
+            </p>
+            <div class="navbar-nav ms-auto align-items-center">
+                <!--Aqui llama al RootRedirectController -->
+                <a class="nav-link" th:href="@{/}">Inicio</a>
+            </div>
+        </div>
+    </nav>
+</section>
+
+
+
+<div class="contenedor-filtros">
+    <h4>Buscar puestos por características</h4>
+    <form action="#" method="get">
+        <div class="seccion-scroll">
+            <div class="grupo-categoria">
+                <div class="categoria-padre">
+                    <input type="checkbox" id="motores" name="cat" value="motores">
+                    <label for="motores">Motores</label>
+                </div>
+                <div class="sub-opciones">
+                    <div class="item"><input type="checkbox" id="mysql" name="motor" value="mysql"><label for="mysql">MySQL</label></div>
+                    <div class="item"><input type="checkbox" id="oracle" name="motor" value="oracle"><label for="oracle">Oracle</label></div>
+                </div>
+            </div>
+
+            <div class="grupo-categoria">
+                <div class="categoria-padre">
+                    <input type="checkbox" id="ciber" name="categoria" value="ciberseguridad">
+                    <label for="ciber">Ciberseguridad</label>
+                </div>
+            </div>
+
+            <div class="grupo-categoria">
+                <div class="categoria-padre">
+                    <input type="checkbox" id="lenguajes" name="cat" value="lenguajes">
+                    <label for="lenguajes">Lenguajes de Programación</label>
+                </div>
+                <div class="sub-opciones">
+                    <div class="item"><input type="checkbox" id="csharp" name="lang" value="csharp"><label for="csharp">C#</label></div>
+                    <div class="item"><input type="checkbox" id="java" name="lang" value="java"><label for="java">Java</label></div>
+                    <div class="item"><input type="checkbox" id="kotlin" name="lang" value="kotlin"><label for="kotlin">Kotlin</label></div>
+                </div>
+            </div>
+
+            <div class="grupo-categoria">
+                <div class="categoria-padre">
+                    <input type="checkbox" id="datab" name="categoria" value="db">
+                    <label for="datab">Bases de Datos</label>
+                </div>
+                <div class="sub-opciones">
+                    <div class="item">
+                        <input type="checkbox" id="modelado" name="tecnica" value="modelado">
+                        <label for="modelado">Modelado</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grupo-categoria">
+                <div class="categoria-padre">
+                    <input type="checkbox" id="web" name="tecnologia" value="web">
+                    <label for="web">Tecnologías Web</label>
+                </div>
+            </div>
+
+            <div class="grupo-categoria">
+                <div class="categoria-padre">
+                    <input type="checkbox" id="testing" name="categoria" value="testing">
+                    <label for="testing">Testing</label>
+                </div>
+                <div class="sub-opciones">
+                    <div class="item">
+                        <input type="checkbox" id="junit" name="herramienta" value="junit">
+                        <label for="junit">JUnit</label>
+                    </div>
+                    <div class="item">
+                        <input type="checkbox" id="assertions" name="herramienta" value="assertions">
+                        <label for="assertions">Assertions</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="seccion-botones">
+                <button type="submit" class="btn-azul">Buscar</button>
+                <button type="reset" class="btn-blanco">Limpiar</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
+
+<footer th:replace="~{presentation/fragmentPublic :: footer}"></footer>
+
+</body>
+</html>
