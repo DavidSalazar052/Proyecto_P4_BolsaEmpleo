@@ -20,8 +20,3 @@ public interface PuestoHabilidadRepository extends JpaRepository<PuestoHabilidad
 }
 
 
-/*
-* caracteriscas
-* Puesto habilidad id_caracterisca y id_puesto
-* Puesto
-* */

@@ -1,10 +1,16 @@
 package BolsaEmpleo.presentation;
 
+import BolsaEmpleo.logic.Base.Caracteristicas;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import BolsaEmpleo.logic.Service;;
+import BolsaEmpleo.logic.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+
+
 @Controller
 public class RootRedirectController {
     @Autowired
@@ -15,9 +21,11 @@ public class RootRedirectController {
         model.addAttribute("puestos",service.Top5_PuestosRecientes());
         return "presentation/viewpublic"; // el redirect se usa para mandarlo al controller que lo dirige al html, pero se puede hacer de una vez (Alex)
     }
-    
+
     @GetMapping("/buscaPuesto")
     public String mostrarBuscaPuesto(Model model){
         return "presentation/buscaPuesto";
     }
+
+
 }

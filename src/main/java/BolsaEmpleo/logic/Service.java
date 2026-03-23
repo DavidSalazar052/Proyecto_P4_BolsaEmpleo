@@ -78,6 +78,14 @@ public class Service {
             throw new IllegalArgumentException("Ya existe esta caracteristica");
         }
     }
+    public List<Caracteristicas> findCaracteristicasRaiz() {
+        return Carac_Repo.findRaices();
+    }
+
+    // Hijos de una categoría
+    public List<Caracteristicas> findHijos(String padreId) {
+        return Carac_Repo.findHijos(padreId);
+    }
 
 //ENTIDADES CON FK ---
     //--PUESTO--
@@ -90,6 +98,12 @@ public class Service {
             throw new IllegalArgumentException("El puesto para esta empresa ya existe");
         }
     }
+//    public List<Puesto> buscarPuestosPorCaracteristicas(List<String> ids) {
+//        if (ids == null || ids.isEmpty()) {
+//            return List.of(); // lista vacía si no seleccionó nada
+//        }
+//        return Puesto_Repo.findPuestosPublicosByCaracteristicas(ids);
+//    }
 
 
     public List<Puesto> Top5_PuestosRecientes(){
@@ -100,6 +114,8 @@ public class Service {
         }
         return result; // con uno ya basta
     }
+
+
 
     //--PUESTO HABILIDADES--
     public List<PuestoHabilidades> findAll_puesto_hab(){
