@@ -55,10 +55,12 @@ public class Service {
     public List<Empresa> findAll_Empresas(){
         return Emp_Repo.findAll();
     }
+
     public void EmpresasAdd(Empresa Emp){
         if(Emp_Repo.existsById(Emp.getId())){
             throw new IllegalArgumentException("Este Empresa ya esta registrada con este ID");
         }
+        Emp_Repo.save(Emp);
     }
     public List<Empresa> empresaSearchByNombre(String nombre) {
         return Emp_Repo.findByNombre(nombre);
@@ -84,11 +86,23 @@ public class Service {
     public List<Oferente> findAll_Oferentes(){
         return Ofe_Repo.findAll();
     }
-    public void OferentesAdd(Oferente Oferente){
-        if(Ofe_Repo.existsById(Oferente.getId())){
-            throw new IllegalArgumentException("Un Oferente ya esta registrado con esta ID");
+    public void OferentesAdd(Oferente Emp){
+        if(Emp_Repo.existsById(Emp.getId())){
+            throw new IllegalArgumentException("Este Oferente ya esta registrado con este ID");
         }
+        Ofe_Repo.save(Emp);
     }
+
+    public List<Oferente> oferenteSearchByNombre(String nombre) {
+        return Ofe_Repo.findByNombre(nombre);
+    }
+
+    public Oferente oferenteRead(String id) {
+        return Ofe_Repo.findById(id).orElseThrow(() -> new IllegalArgumentException("Prestamo no existe"));
+    }
+
+
+
 
     //--CARACTERISTICAS--
     public List<Caracteristicas> findAll_Caracteristicas(){
@@ -132,8 +146,9 @@ public class Service {
 
     public void Puesto_emp_Add(Puesto puestoEmp){
         if(Puesto_Repo.existsById(puestoEmp.getId())){
-            throw new IllegalArgumentException("El puesto para esta empresa ya existe");
+            throw new IllegalArgumentException("Este Empresa ya esta registrada con este ID");
         }
+        Puesto_Repo.save(puestoEmp);
     }
 
     public void Puesto_emp_delete(Puesto puestoEmp){
@@ -180,6 +195,8 @@ public class Service {
         if(Puesto_hab_Repo.existsById(puestoEmp.getId())){
             throw new IllegalArgumentException("Esta habilidad ya esta asociada al puesto");
         }
+
+        Puesto_hab_Repo.save(puestoEmp);
     }
 
     public void Puesto_hab_delete(PuestoHabilidades puestoEmp){
