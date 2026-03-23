@@ -15,6 +15,7 @@ public class RootRedirectController {
         model.addAttribute("caracteristicas",service.findAll_Caracteristicas());
         return "presentation/viewpublic"; // el redirect se usa para mandarlo al controller que lo dirige al html, pero se puede hacer de una vez (Alex)
     }
+    
     @GetMapping("/buscaPuesto")
     public String mostrarBuscaPuesto(Model model){
         return "presentation/buscaPuesto";

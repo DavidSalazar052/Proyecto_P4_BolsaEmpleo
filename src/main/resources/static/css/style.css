@@ -258,3 +258,41 @@ footer strong {
     flex-direction: column;
     justify-content: center;
 }
+
+/* sección como tarjeta */
+.puestos.recientes {
+    width: 90%;
+    margin: 30px auto;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+/* tabla */
+.caracteristica {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* encabezado azul */
+.caracteristica thead {
+    background: #1f6feb;
+    color: #fff;
+}
+
+/* celdas */
+.caracteristica th,
+.caracteristica td {
+    padding: 10px;
+    text-align: left;
+}
+
+/* líneas suaves */
+.caracteristica tr {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* hover sutil */
+.caracteristica tbody tr:hover {
+    background: #f1f5ff;
+}

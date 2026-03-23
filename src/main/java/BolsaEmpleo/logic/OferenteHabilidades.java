@@ -2,7 +2,6 @@ package BolsaEmpleo.logic;
 
 import BolsaEmpleo.logic.Base.Caracteristicas;
 import BolsaEmpleo.logic.Base.Oferente;
-import BolsaEmpleo.logic.Base.Usuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
