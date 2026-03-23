@@ -3,6 +3,27 @@
 <head th:replace="~{presentation/fragmentPublic :: head}"></head>
 <body>
 
+
+<section class="Inicio">
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <p><img src="https://cdn-icons-png.flaticon.com/512/86/86155.png" alt="icono" style="width:50px;height:50px;filter: brightness(0) invert(1);"> <strong> Bolsa de Empleo</strong></p>
+
+            <div class="navbar-nav ms-auto align-items-centered">
+                <a class="nav-link" th:href="@{/DashboardAdministrador}">Dashboard</a>
+
+                <a class="nav-link" th:href="@{/EmpresasPendientes}">Empresas pendientes</a>
+                <a class="nav-link" th:href="@{/OferentesPendientes}">Oferentes pendientes</a>
+
+                <a class="nav-link" th:href="@{/DashboardOferente}">Caracteristicas</a>
+                <a class="nav-link" th:href="@{/DashboardOferente}">Reportes</a>
+                <a class="nav-link" th:href="@{/login}">Logout</a>
+
+            </div>
+        </div>
+    </nav>
+</section>
+
     <table class="tabla-simple"
            th:if="${empresasPendientes != null and !#lists.isEmpty(empresasPendientes)}">
 
@@ -12,25 +33,7 @@
             <th>Acción</th>
         </tr>
         </thead>
-        <section class="Inicio">
-            <nav class="navbar navbar-expand-lg navbar-custom">
-                <div class="container">
-                    <p><img src="https://cdn-icons-png.flaticon.com/512/86/86155.png" alt="icono" style="width:50px;height:50px;filter: brightness(0) invert(1);"> <strong> Bolsa de Empleo</strong></p>
 
-                    <div class="navbar-nav ms-auto align-items-centered">
-                        <a class="nav-link" th:href="@{/DashboardAdministrador}">Dashboard</a>
-
-                        <a class="nav-link" th:href="@{/EmpresasPendientes}">Empresas pendientes</a>
-                        <a class="nav-link" th:href="@{/OferentesPendientes}">Oferentes pendientes</a>
-
-                        <a class="nav-link" th:href="@{/DashboardOferente}">Caracteristicas</a>
-                        <a class="nav-link" th:href="@{/DashboardOferente}">Reportes</a>
-                        <a class="nav-link" th:href="@{/login}">Logout</a>
-
-                    </div>
-                </div>
-            </nav>
-        </section>
         <tbody>
         <tr th:each="e : ${empresasPendientes}">
             <td th:text="${e.correo}"></td>
@@ -49,7 +52,12 @@
 
     <div class="estado-vacio"
          th:if="${empresasPendientes == null or #lists.isEmpty(empresasPendientes)}">
-        <p>No hay empresas pendientes de aprobación.</p>
+        <section>
+            <div class="container hero-content">
+                <h1 class="hero-context">Bolsa de empleo</h1>
+                <p>No hay empresas pendientes de aprobación.</p>
+            </div>
+        </section>
     </div>
 
 

@@ -11,10 +11,6 @@ import java.util.List;
 
 
 public interface PuestoHabilidadRepository extends JpaRepository<PuestoHabilidades, String> {
-
-
-
-
 }
 
 

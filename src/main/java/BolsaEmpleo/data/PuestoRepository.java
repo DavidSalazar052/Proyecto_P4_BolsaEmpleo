@@ -12,5 +12,4 @@ public interface PuestoRepository extends JpaRepository<Puesto,String>  {
     @Query(value = "SELECT * FROM puesto WHERE tipo = 'publico' LIMIT 5", nativeQuery = true)
     public List<Puesto> findTop5Puestos();
 
-
 }
