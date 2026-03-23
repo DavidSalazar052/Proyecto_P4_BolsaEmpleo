@@ -55,6 +55,12 @@ public class Service {
     public List<Empresa> findAll_Empresas(){
         return Emp_Repo.findAll();
     }
+    public List<Empresa> findAll_EmpresasNoAprobadas(){
+        return Emp_Repo.findAllByNoAprobada();
+    }
+    public List<Empresa> findAll_EmpresasAprobadas(){
+        return Emp_Repo.findAllByAprobada();
+    }
     public void EmpresasAdd(Empresa Emp){
         if(Emp_Repo.existsById(Emp.getId())){
             throw new IllegalArgumentException("Este Empresa ya esta registrada con este ID");
@@ -88,6 +94,13 @@ public class Service {
         if(Ofe_Repo.existsById(Oferente.getId())){
             throw new IllegalArgumentException("Un Oferente ya esta registrado con esta ID");
         }
+    }
+    public List<Oferente> findAll_Oferentes_NoAprobadas(){
+        return Ofe_Repo.findAllByNoAprobadaOferente();
+    }
+    public List<Oferente> findAll_Oferentes_Aprobadas(){
+        return Ofe_Repo.findAllByAprobadaOferente();
+
     }
 
     //--CARACTERISTICAS--

@@ -6,15 +6,17 @@
     <section class="Inicio">
         <nav class="navbar navbar-expand-lg navbar-custom">
             <div class="container">
-                <p>
-                    <img src="https://cdn-icons-png.flaticon.com/512/86/86155.png"
-                         alt="icono"
-                         style="width:50px;height:50px;filter: brightness(0) invert(1);">
-                    <strong> Bolsa de Empleo</strong>
-                </p>
-                <div class="navbar-nav ms-auto align-items-center">
-                    <!--Aqui llama al RootRedirectController -->
-                    <a class="nav-link" th:href="@{/}">Inicio</a>
+                <p><img src="https://cdn-icons-png.flaticon.com/512/86/86155.png" alt="icono" style="width:50px;height:50px;filter: brightness(0) invert(1);"> <strong> Bolsa de Empleo</strong></p>
+
+                <div class="navbar-nav ms-auto align-items-centered">
+                    <a class="nav-link" th:href="@{/DashboardAdministrador}">Dashboard</a>
+
+                    <a class="nav-link" th:href="@{/EmpresasPendientes}">EMPRESAS pendientes</a>
+                    <a class="nav-link" th:href="@{/OferentesPendientes}">OFERENTES pendientes</a>
+
+                    <a class="nav-link" th:href="@{/DashboardOferente}">Caracteristicas</a>
+                    <a class="nav-link" th:href="@{/DashboardOferente}">Reportes</a>
+                    <a class="nav-link" th:href="@{/login}">Logout</a>
                 </div>
             </div>
         </nav>
@@ -24,7 +26,6 @@
         <p class="hero-eyebrow">Administrador:</p>
         <h1 class="hero-title">Bienvenido</h1>
     </div>
-
 
 
     <footer th:replace="~{presentation/fragmentPublic :: footer}"></footer>
