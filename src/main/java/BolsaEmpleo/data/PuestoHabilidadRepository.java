@@ -13,9 +13,7 @@ import java.util.List;
 public interface PuestoHabilidadRepository extends JpaRepository<PuestoHabilidades, String> {
 
 
-    @Query(value = "SELECT p FROM  PuestoHabilidades p WHERE p.habilidad IN :ids")
 
-    public List<Puesto> buscarPorIds(@Param("ids") List<String> ids);
 
 }
 

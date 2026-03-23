@@ -17,11 +17,7 @@ import lombok.Setter;
 public class Usuario {
     @Id
     private String id;
-    /*
-    * nota (josue):
-    * Si este username se le deja sin @Unique dentremos varios usuarios con el mismo nombre pero diferente Contraseña
-    * O le ponemos que sea @Unique en el UsuarioRepository quitamos List<Usuario>
-    * */
+
     @Column(unique = true)
     private String username; // oferante - admin - empresa
 

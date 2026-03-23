@@ -16,4 +16,7 @@ public interface EmpresaRepository extends JpaRepository<Empresa, String> {
 
     @Query("select e from Empresa e where e.aprobada = false")
     public List<Empresa> findAllByNoAprobada();
+
+    @Query("select e from Empresa e where e.nombre like %?1%")
+    public List<Empresa> findByNombre(String nombre);
 }

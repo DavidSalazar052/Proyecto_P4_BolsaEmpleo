@@ -49,6 +49,8 @@ public class Service {
         }
     }
 
+
+
     //--EMPRESAS--
     public List<Empresa> findAll_Empresas(){
         return Emp_Repo.findAll();
@@ -57,6 +59,25 @@ public class Service {
         if(Emp_Repo.existsById(Emp.getId())){
             throw new IllegalArgumentException("Este Empresa ya esta registrada con este ID");
         }
+    }
+    public List<Empresa> empresaSearchByNombre(String nombre) {
+        return Emp_Repo.findByNombre(nombre);
+    }
+
+    public Empresa empresaRead(String id) {
+        return Emp_Repo.findById(id).orElseThrow(() -> new IllegalArgumentException("Prestamo no existe"));
+    }
+    public void empresaUpdate(Empresa empresa) {
+        if(!Emp_Repo.existsById(empresa.getId())) {
+            throw new IllegalArgumentException("Prestamo no existe");
+        }
+        Emp_Repo.save(empresa);
+    }
+    public void empresaDelete(String id) {
+        Emp_Repo.deleteById(id);
+    }
+    public void empresaCopy(String id) {
+        Emp_Repo.deleteById(id);
     }
 
     //--OFERENTES--
@@ -73,21 +94,37 @@ public class Service {
     public List<Caracteristicas> findAll_Caracteristicas(){
         return Carac_Repo.findAll();
     }
-    public void CaracteristicasAdd(Caracteristicas caracteristicas){
-        if(Carac_Repo.existsById(caracteristicas.getId())){
-            throw new IllegalArgumentException("Ya existe esta caracteristica");
+    public void caracteristicasAdd(Caracteristicas Emp){
+        if(Emp_Repo.existsById(Emp.getId())){
+            throw new IllegalArgumentException("Este Oferente ya esta registrado con este ID");
         }
+        Carac_Repo.save(Emp);
     }
-    public List<Caracteristicas> findCaracteristicasRaiz() {
-        return Carac_Repo.findRaices();
+    public List<Caracteristicas> findPadresCaracteristicas() {
+        return Carac_Repo.findPadres();
     }
 
-    // Hijos de una categoría
-    public List<Caracteristicas> findHijos(String padreId) {
+    public List<Caracteristicas> findHijosCaracteristicas(String padreId) {
         return Carac_Repo.findHijos(padreId);
     }
+    public Caracteristicas caracteristicasRead(String id) {
+        return Carac_Repo.findById(id).orElseThrow(() -> new IllegalArgumentException("Prestamo no existe"));
+    }
+    public void caracteristicasUpdate(Caracteristicas caracteristicas) {
+        if(!Carac_Repo.existsById(caracteristicas.getId())) {
+            throw new IllegalArgumentException("Prestamo no existe");
+        }
+        Carac_Repo.save(caracteristicas);
+    }
+    public void prestamoDelete(String id) {
+        Carac_Repo.deleteById(id);
+    }
 
-//ENTIDADES CON FK ---
+    public void prestamoCopy(String id) {
+        Carac_Repo.deleteById(id);
+    }
+
+//----------------------------------------------------------------------------------------
     //--PUESTO--
     public List<Puesto> findAll_puesto_emp(){
         return Puesto_Repo.findAll();
@@ -98,13 +135,13 @@ public class Service {
             throw new IllegalArgumentException("El puesto para esta empresa ya existe");
         }
     }
-//    public List<Puesto> buscarPuestosPorCaracteristicas(List<String> ids) {
-//        if (ids == null || ids.isEmpty()) {
-//            return List.of(); // lista vacía si no seleccionó nada
-//        }
-//        return Puesto_Repo.findPuestosPublicosByCaracteristicas(ids);
-//    }
 
+    public void Puesto_emp_delete(Puesto puestoEmp){
+        if(Puesto_Repo.existsById(puestoEmp.getId())){
+            throw new IllegalArgumentException("Este Empresa ya esta registrada con este ID");
+        }
+        Puesto_Repo.deleteById(puestoEmp.getId());
+    }
 
     public List<Puesto> Top5_PuestosRecientes(){
         List<Puesto> result;
@@ -115,6 +152,23 @@ public class Service {
         return result; // con uno ya basta
     }
 
+    public Puesto PuestoRead(String id) {
+        return Puesto_Repo.findById(id).orElseThrow(() -> new IllegalArgumentException("Prestamo no existe"));
+    }
+
+    public void PuestoUpdate(Puesto puesto) {
+        if(!Puesto_Repo.existsById(puesto.getId())) {
+            throw new IllegalArgumentException("Prestamo no existe");
+        }
+        Puesto_Repo.save(puesto);
+    }
+
+    public void PuestoDelete(String id) {
+        Puesto_Repo.deleteById(id);
+    }
+    public void PuestoCopy(String id) {
+        Puesto_Repo.deleteById(id);
+    }
 
 
     //--PUESTO HABILIDADES--
@@ -127,16 +181,32 @@ public class Service {
             throw new IllegalArgumentException("Esta habilidad ya esta asociada al puesto");
         }
     }
-    public List<PuestoHabilidades> findAll_puestos_Selected(){
-       // List<Caracteristicas> seleccionadas = null;
-       // return Puesto_hab_Repo.buscarPorIds(seleccionadas);
-        return null;
-    }
 
+    public void Puesto_hab_delete(PuestoHabilidades puestoEmp){
+        if(Puesto_hab_Repo.existsById(puestoEmp.getId())){
+            throw new IllegalArgumentException("Esta habilidad ya esta asociada al puesto");
+        }
+
+        Puesto_hab_Repo.deleteById(puestoEmp.getId());
+    }
+    public PuestoHabilidades prestamoRead(String id) {
+        return Puesto_hab_Repo.findById(id).orElseThrow(() -> new IllegalArgumentException("Prestamo no existe"));
+    }
     //--OFERENTE HABILIDADES--
     public List<OferenteHabilidades> findAll_Oferente_hab(){
         return Oferente_hab_Repo.findAll();
     }
+    public void Ofere_hab_Add(OferenteHabilidades oferenteHab){
+        if(Oferente_hab_Repo.existsById(oferenteHab.getId())){
+            throw new IllegalArgumentException("Este Oferente ya esta registrado con este ID");
+        }
+        Oferente_hab_Repo.save(oferenteHab);
+    }
+    public void Oferente_hab_Delete(String id) {
+        Oferente_hab_Repo.deleteById(id);
+    }
+
+    
 
 
 }
