@@ -12,7 +12,7 @@ public class RootRedirectController {
 
     @GetMapping("/")
     public String redirectRoot(Model model){
-        model.addAttribute("caracteristicas",service.findAll_Caracteristicas());
+        model.addAttribute("puestos",service.Top5_PuestosRecientes());
         return "presentation/viewpublic"; // el redirect se usa para mandarlo al controller que lo dirige al html, pero se puede hacer de una vez (Alex)
     }
     

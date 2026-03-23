@@ -25,11 +25,14 @@
 
 <div class="contenedor-filtros">
     <h4>Buscar puestos por características</h4>
-    <form action="#" method="get">
+    <!--buscaPadre(id_padre == null)-->
+    <!--buscaHijo(id_padre == FK?)-->
+    <form th:action="" method="get">
+
         <div class="seccion-scroll">
             <div class="grupo-categoria">
                 <div class="categoria-padre">
-                    <input type="checkbox" id="motores" name="cat" value="motores">
+                    <input type="checkbox" id="motores" name="motor" value="motores">
                     <label for="motores">Motores</label>
                 </div>
                 <div class="sub-opciones">
@@ -47,7 +50,7 @@
 
             <div class="grupo-categoria">
                 <div class="categoria-padre">
-                    <input type="checkbox" id="lenguajes" name="cat" value="lenguajes">
+                    <input type="checkbox" id="lenguajes" name="lang" value="lenguajes">
                     <label for="lenguajes">Lenguajes de Programación</label>
                 </div>
                 <div class="sub-opciones">
@@ -59,7 +62,7 @@
 
             <div class="grupo-categoria">
                 <div class="categoria-padre">
-                    <input type="checkbox" id="datab" name="categoria" value="db">
+                    <input type="checkbox" id="datab" name="categoria" value="datab">
                     <label for="datab">Bases de Datos</label>
                 </div>
                 <div class="sub-opciones">
@@ -72,7 +75,7 @@
 
             <div class="grupo-categoria">
                 <div class="categoria-padre">
-                    <input type="checkbox" id="web" name="tecnologia" value="web">
+                    <input type="checkbox" id="web" name="categoria" value="web">
                     <label for="web">Tecnologías Web</label>
                 </div>
             </div>
@@ -102,6 +105,13 @@
     </form>
 </div>
 
+
+<div class="MostrarPuestos">
+
+    Aqui van los puestos
+
+
+</div>
 
 
 

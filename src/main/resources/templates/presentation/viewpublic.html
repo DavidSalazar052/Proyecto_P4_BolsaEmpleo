@@ -58,25 +58,29 @@
           
         </section>
 
-        <section class="puestos recientes">
-            <table class="caracteristica">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>NOMBRE</th>
-                        <th>PADRE</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="c : ${caracteristicas}">
-                        <td th:text="${c.id}"></td>
-                        <td th:text="${c.nombre}"></td>
-                        <td th:text="${c.padre != null ? c.padre.nombre : 'Sin padre'}"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
+        <section class="contenedor-puestos">
+            <h2>Últimos puestos públicos</h2>
 
+            <div class="grid-puestos">
+                <div class="card-puesto" th:each="p : ${puestos}">
+
+                    <h3 style="font-weigh: bold;"th:text="${p.empresa != null ? p.empresa.nombre : 'Empresa'}"></h3>
+                    <p class="titulo" th:text="${p.descripcion}"></p>
+
+                    <p class="salario" th:text="'₡ ' + ${p.salario}"></p>
+
+                    <button class="btn-detalle">Ver detalle</button>
+
+                    <!-- detalle oculto -->
+                    <div class="detalle">
+                        <p><strong>Tipo:</strong> <span th:text="${p.tipo}"></span></p>
+                        <p><strong>Estado:</strong> <span th:text="${p.estado}"></span></p>
+                        <p><strong>Fecha:</strong> <span th:text="${p.fecha}"></span></p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
 
         <!--PIE DE PAGINA PUBLICA-->
         <footer th:replace="~{presentation/fragmentPublic :: footer}"></footer>

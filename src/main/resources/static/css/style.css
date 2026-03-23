@@ -259,40 +259,74 @@ footer strong {
     justify-content: center;
 }
 
-/* sección como tarjeta */
-.puestos.recientes {
+/* contenedor */
+.contenedor-puestos {
     width: 90%;
     margin: 30px auto;
-    background: #ffffff;
+}
+
+/* grid */
+.grid-puestos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+/* card */
+.card-puesto {
+    background: #dfeee2;
     padding: 15px;
-    border-radius: 8px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    position: relative;
 }
 
-/* tabla */
-.caracteristica {
+/* titulo empresa */
+.card-puesto h3 {
+    margin: 0;
+    color: #2d3748;
+}
+
+/* puesto */
+.titulo {
+    margin: 10px 0;
+    color: #4a5568;
+}
+
+/* salario */
+.salario {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* botón */
+.btn-detalle {
     width: 100%;
-    border-collapse: collapse;
+    padding: 8px;
+    border: 2px solid #1f6feb;
+    background: transparent;
+    color: #1f6feb;
+    border-radius: 6px;
+    cursor: pointer;
 }
 
-/* encabezado azul */
-.caracteristica thead {
+/* hover botón */
+.btn-detalle:hover {
     background: #1f6feb;
-    color: #fff;
+    color: white;
 }
 
-/* celdas */
-.caracteristica th,
-.caracteristica td {
+/* detalle oculto */
+.detalle {
+    display: none;
+    margin-top: 10px;
+    background: #fff;
     padding: 10px;
-    text-align: left;
+    border-radius: 8px;
+    border: 1px solid #1f6feb;
 }
 
-/* líneas suaves */
-.caracteristica tr {
-    border-bottom: 1px solid #e5e7eb;
-}
-
-/* hover sutil */
-.caracteristica tbody tr:hover {
-    background: #f1f5ff;
+/* mostrar detalle al pasar mouse */
+.card-puesto:hover .detalle {
+    display: block;
 }

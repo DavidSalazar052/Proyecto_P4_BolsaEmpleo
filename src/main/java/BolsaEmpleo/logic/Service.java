@@ -4,6 +4,7 @@ import BolsaEmpleo.data.*;
 
 import BolsaEmpleo.logic.Base.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 
 
 import java.util.List;
@@ -89,10 +90,16 @@ public class Service {
             throw new IllegalArgumentException("El puesto para esta empresa ya existe");
         }
     }
-    public List<Puesto> Top5_PuestosRecientes(){
-        return null;
-    }
 
+
+    public List<Puesto> Top5_PuestosRecientes(){
+        List<Puesto> result;
+        result = Puesto_Repo.findTop5Puestos();
+        if (result == null) {
+            throw new IllegalArgumentException("No hay suficientes puestos para mostrar");
+        }
+        return result; // con uno ya basta
+    }
 
     //--PUESTO HABILIDADES--
     public List<PuestoHabilidades> findAll_puesto_hab(){
@@ -104,9 +111,16 @@ public class Service {
             throw new IllegalArgumentException("Esta habilidad ya esta asociada al puesto");
         }
     }
+    public List<PuestoHabilidades> findAll_puestos_Selected(){
+       // List<Caracteristicas> seleccionadas = null;
+       // return Puesto_hab_Repo.buscarPorIds(seleccionadas);
+        return null;
+    }
+
     //--OFERENTE HABILIDADES--
     public List<OferenteHabilidades> findAll_Oferente_hab(){
         return Oferente_hab_Repo.findAll();
     }
+
 
 }
