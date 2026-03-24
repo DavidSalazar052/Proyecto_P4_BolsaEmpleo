@@ -18,6 +18,7 @@ public class Empresa {
     private String id;
 
     @OneToOne
+    @MapsId
     @JoinColumn(name = "usuario_id")   // ← nombre explícito de la FK
     private Usuario usuario;
 
