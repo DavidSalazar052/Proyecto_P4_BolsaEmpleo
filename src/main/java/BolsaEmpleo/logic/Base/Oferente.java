@@ -15,6 +15,7 @@ import lombok.Setter;
 
 public class Oferente {
     @Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @OneToOne

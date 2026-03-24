@@ -15,11 +15,12 @@ import lombok.Setter;
 
 public class Empresa {
     @Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "usuario_id")   // ← nombre explícito de la FK
+    //@JoinColumn(name = "usuario_id")   // ← nombre explícito de la FK
     private Usuario usuario;
 
     private String nombre;

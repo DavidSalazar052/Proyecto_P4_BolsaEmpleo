@@ -15,6 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Puesto {
     @Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @ManyToOne

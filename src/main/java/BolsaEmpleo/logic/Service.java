@@ -4,7 +4,6 @@ import BolsaEmpleo.data.*;
 
 import BolsaEmpleo.logic.Base.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 
 
 import java.util.List;
@@ -22,6 +21,7 @@ public class Service {
     private OferentesRepository Ofe_Repo;
     @Autowired
     private CaracteristicasRepository Carac_Repo;
+
 
     //ENTIDADES CON FK
     @Autowired
@@ -84,6 +84,22 @@ public class Service {
     }
     public void empresaCopy(String id) {
         Emp_Repo.deleteById(id);
+    }
+
+    // CODIGO CLAUDE - RECUERDE QUITAR ESTE COMENTARIO
+    public void registrarEmpresa(Usuario usuario, Empresa empresa) {
+
+        // Verificar que el username no esté tomado
+        if (usuario_Repo.findByUsernameOnly(usuario.getUsername()) != null) {
+            throw new IllegalArgumentException("El nombre de usuario '" + usuario.getUsername() + "' ya está en uso.");
+        }
+
+        // 1. Guardar el Usuario en la tabla `usuario` PRIMERO
+        //    Esto es obligatorio: Empresa tiene FK a Usuario (@MapsId)
+        usuario_Repo.save(usuario);
+
+        // 2. Ahora sí guardar la Empresa — JPA puede resolver el ID correctamente
+        Emp_Repo.save(empresa);
     }
 
     //--OFERENTES--
@@ -233,8 +249,5 @@ public class Service {
     public void Oferente_hab_Delete(String id) {
         Oferente_hab_Repo.deleteById(id);
     }
-
-    
-
 
 }

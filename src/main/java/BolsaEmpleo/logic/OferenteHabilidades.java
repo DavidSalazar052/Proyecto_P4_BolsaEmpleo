@@ -19,6 +19,7 @@ import lombok.Setter;
 public class OferenteHabilidades {
 
     @Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     @ManyToOne
     @JoinColumn(name = "oferente_id")

@@ -15,6 +15,7 @@ public class AdminController {
     public String mostrar_DashboardAdmin(){
         return "presentation/Admin/DashboardAdmin";
     }
+
     @GetMapping("/EmpresasPendientes")
     public String mostrar_EmpresasPendientes(Model model){
         model.addAttribute("empresasPendientes",service.findAll_EmpresasNoAprobadas());
