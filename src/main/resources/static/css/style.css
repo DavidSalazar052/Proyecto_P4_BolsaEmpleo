@@ -330,3 +330,78 @@ footer strong {
 .card-puesto:hover .detalle {
     display: block;
 }
+
+/* HERO */
+.Inicio_Admin .hero-eyebrow {
+    color: var(--dorado);
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+
+/* ════════════════════════════════════
+   empresas/oferentes pendientes
+════════════════════════════════════ */
+/* TITULO */
+.titulo-seccion {
+    font-size: 22px;
+    font-weight: bold;
+    color: #1b2a41;
+    margin-bottom: 1rem;
+}
+
+/* TABLA */
+.tabla-simple {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+}
+
+/* HEADER */
+.tabla-simple thead {
+    background-color: #eeeeee;
+}
+
+.tabla-simple th {
+    text-align: left;
+    padding: 10px;
+    font-size: 13px;
+    color: #333;
+}
+
+/* FILAS */
+.tabla-simple td {
+    padding: 10px;
+    font-size: 14px;
+    border-top: 1px solid #ddd;
+}
+
+/* BOTÓN */
+.btn-aprobar-simple {
+    background-color: #2d8a4e;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.btn-aprobar-simple:hover {
+    background-color: #256f3e;
+}
+
+/* NAVBAR */
+.navbar-custom {
+    background-color: #0d1b2a;
+}
+
+.navbar-custom .nav-link {
+    color: white;
+    margin-left: 15px;
+}
+
+.navbar-custom .nav-link:hover {
+    color: #d4a017;
+}

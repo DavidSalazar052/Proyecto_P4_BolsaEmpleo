@@ -55,6 +55,12 @@ public class Service {
     public List<Empresa> findAll_Empresas(){
         return Emp_Repo.findAll();
     }
+    public List<Empresa> findAll_EmpresasNoAprobadas(){
+        return Emp_Repo.findAllByNoAprobada();
+    }
+    public List<Empresa> findAll_EmpresasAprobadas(){
+        return Emp_Repo.findAllByAprobada();
+    }
 
     public void EmpresasAdd(Empresa Emp){
         if(Emp_Repo.existsById(Emp.getId())){
@@ -92,17 +98,13 @@ public class Service {
         }
         Ofe_Repo.save(Emp);
     }
-
-    public List<Oferente> oferenteSearchByNombre(String nombre) {
-        return Ofe_Repo.findByNombre(nombre);
+    public List<Oferente> findAll_Oferentes_NoAprobadas(){
+        return Ofe_Repo.findAllByNoAprobadaOferente();
     }
+    public List<Oferente> findAll_Oferentes_Aprobadas(){
+        return Ofe_Repo.findAllByAprobadaOferente();
 
-    public Oferente oferenteRead(String id) {
-        return Ofe_Repo.findById(id).orElseThrow(() -> new IllegalArgumentException("Prestamo no existe"));
     }
-
-
-
 
     //--CARACTERISTICAS--
     public List<Caracteristicas> findAll_Caracteristicas(){

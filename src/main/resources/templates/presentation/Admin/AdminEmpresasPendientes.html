@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{presentation/fragmentPublic :: head}"></head>
+<body>
+
+    <table class="tabla-simple"
+           th:if="${empresasPendientes != null and !#lists.isEmpty(empresasPendientes)}">
+
+        <thead>
+        <tr>
+            <th>Usuario</th>
+            <th>Acción</th>
+        </tr>
+        </thead>
+        <section class="Inicio">
+            <nav class="navbar navbar-expand-lg navbar-custom">
+                <div class="container">
+                    <p><img src="https://cdn-icons-png.flaticon.com/512/86/86155.png" alt="icono" style="width:50px;height:50px;filter: brightness(0) invert(1);"> <strong> Bolsa de Empleo</strong></p>
+
+                    <div class="navbar-nav ms-auto align-items-centered">
+                        <a class="nav-link" th:href="@{/DashboardAdministrador}">Dashboard</a>
+
+                        <a class="nav-link" th:href="@{/EmpresasPendientes}">Empresas pendientes</a>
+                        <a class="nav-link" th:href="@{/OferentesPendientes}">Oferentes pendientes</a>
+
+                        <a class="nav-link" th:href="@{/DashboardOferente}">Caracteristicas</a>
+                        <a class="nav-link" th:href="@{/DashboardOferente}">Reportes</a>
+                        <a class="nav-link" th:href="@{/login}">Logout</a>
+
+                    </div>
+                </div>
+            </nav>
+        </section>
+        <tbody>
+        <tr th:each="e : ${empresasPendientes}">
+            <td th:text="${e.correo}"></td>
+            <td>
+                <form th:action="@{/admin/empresas/aprobar}" method="post">
+                    <input type="hidden" name="id" th:value="${e.id}" />
+                    <button type="submit" class="btn-aprobar-simple">
+                        Aprobar y generar clave
+                    </button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+
+    <div class="estado-vacio"
+         th:if="${empresasPendientes == null or #lists.isEmpty(empresasPendientes)}">
+        <p>No hay empresas pendientes de aprobación.</p>
+    </div>
+
+
+<footer th:replace="~{presentation/fragmentPublic :: footer}"></footer>
+</body>
+</html>
