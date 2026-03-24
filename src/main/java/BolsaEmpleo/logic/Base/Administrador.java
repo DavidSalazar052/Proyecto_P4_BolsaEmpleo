@@ -18,6 +18,7 @@ public class Administrador {
     private String id;//PK FK
 
     @OneToOne
+    @MapsId
     @JoinColumn(name = "usuario_id")   // ← nombre explícito de la FK
     private Usuario usuario;
 

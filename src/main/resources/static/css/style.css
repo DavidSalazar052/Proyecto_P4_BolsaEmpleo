@@ -259,77 +259,88 @@ footer strong {
     justify-content: center;
 }
 
-/* contenedor */
+/* ════════════════════════════════════
+  ultimos puestos
+════════════════════════════════════ */
+
+/* CONTENEDOR */
 .contenedor-puestos {
-    width: 90%;
-    margin: 30px auto;
+    padding: 2rem;
+    background-color: #f4f6f9;
 }
 
-/* grid */
+.contenedor-puestos h2 {
+    margin-bottom: 1.5rem;
+    color: #1b2a41;
+}
+
+/* GRID */
 .grid-puestos {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
 }
 
-/* card */
+/* CARD */
 .card-puesto {
-    background: #dfeee2;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     position: relative;
+    background-color: #ffffff;
+    padding: 1.2rem;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
 }
 
-/* titulo empresa */
+/* TEXTO */
 .card-puesto h3 {
-    margin: 0;
-    color: #2d3748;
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #1b2a41;
 }
 
-/* puesto */
 .titulo {
-    margin: 10px 0;
-    color: #4a5568;
-}
-
-/* salario */
-.salario {
-    font-weight: bold;
+    font-size: 14px;
+    color: #555;
     margin-bottom: 10px;
 }
 
-/* botón */
+.salario {
+    font-size: 15px;
+    font-weight: bold;
+    color: #2d8a4e;
+}
+
+/* BOTÓN (opcional ocultarlo si ya no se usa) */
 .btn-detalle {
-    width: 100%;
-    padding: 8px;
-    border: 2px solid #1f6feb;
-    background: transparent;
-    color: #1f6feb;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-/* hover botón */
-.btn-detalle:hover {
-    background: #1f6feb;
-    color: white;
-}
-
-/* detalle oculto */
-.detalle {
     display: none;
-    margin-top: 10px;
-    background: #fff;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #1f6feb;
 }
 
-/* mostrar detalle al pasar mouse */
-.card-puesto:hover .detalle {
-    display: block;
+/* DETALLE OVERLAY */
+.detalle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(13, 27, 42, 0.95);
+    color: white;
+
+    padding: 1rem;
+    border-radius: 8px;
+
+    opacity: 0;
+    transition: opacity 0.25s ease;
 }
+
+/* MOSTRAR AL PASAR EL MOUSE */
+.card-puesto:hover .detalle {
+    opacity: 1;
+}
+
+/* ════════════════════════════════════
+   HERO
+════════════════════════════════════ */
 
 /* HERO */
 .Inicio_Admin .hero-eyebrow {

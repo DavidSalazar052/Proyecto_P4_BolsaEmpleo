@@ -20,11 +20,11 @@ public class OferenteHabilidades {
 
     @Id
     private String id;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "oferente_id")
     private Oferente oferente;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "caracteristicas_id")
     private Caracteristicas caracteristicas;
 

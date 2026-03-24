@@ -211,6 +211,21 @@ public class Service {
     public PuestoHabilidades prestamoRead(String id) {
         return Puesto_hab_Repo.findById(id).orElseThrow(() -> new IllegalArgumentException("Prestamo no existe"));
     }
+
+    public List<PuestoHabilidades> findBySkill(String skill){
+        //retorna los puestos que contienene la habilidad, los que no los quita de la lista
+        //se va usar en el buscar rapido de la vista publica, aqui se extraen los puestos de cada puesto habilidad devuelto
+        List<PuestoHabilidades> puestos = Puesto_hab_Repo.findAll();
+        if (puestos == null) {
+            throw new IllegalArgumentException("Esta habilidad ya esta asociada al puesto");
+        }
+        for(PuestoHabilidades p : puestos){
+            if(!p.getHabilidad().getNombre().equals(skill)){
+                puestos.remove(p);
+            }
+        }
+        return puestos;
+    }
     //--OFERENTE HABILIDADES--
     public List<OferenteHabilidades> findAll_Oferente_hab(){
         return Oferente_hab_Repo.findAll();

@@ -21,9 +21,6 @@ public class PuestoHabilidades {
     @JoinColumn(name = "puesto_id")
     private Puesto puesto;
 
-
-    //@ManyToOne
-
     @ManyToOne
     @JoinColumn(name = "caracteristica_id")
     private Caracteristicas habilidad;
