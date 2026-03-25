@@ -4,36 +4,34 @@ import BolsaEmpleo.data.*;
 import BolsaEmpleo.logic.Base.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
+import java.util.*;
 
 @org.springframework.stereotype.Service
 public class Service {
 
-    // ENTIDADES BASE
-    @Autowired private UsuarioRepository usuario_Repo;
-    @Autowired private AdministradorRepository Admi_Repo;
-    @Autowired private EmpresaRepository Emp_Repo;
-    @Autowired private OferentesRepository Ofe_Repo;
-    @Autowired private CaracteristicasRepository Carac_Repo;
-
-    // ENTIDADES CON FK
-    @Autowired private PuestoRepository Puesto_Repo;
-    @Autowired private PuestoHabilidadRepository Puesto_hab_Repo;
+    // ── Repositorios ─────────────────────────────────────────────
+    @Autowired private UsuarioRepository           usuario_Repo;
+    @Autowired private AdministradorRepository     Admi_Repo;
+    @Autowired private EmpresaRepository           Emp_Repo;
+    @Autowired private OferentesRepository         Ofe_Repo;
+    @Autowired private CaracteristicasRepository   Carac_Repo;
+    @Autowired private PuestoRepository            Puesto_Repo;
+    @Autowired private PuestoHabilidadRepository   Puesto_hab_Repo;
     @Autowired private OferenteHabilidadRepository Oferente_hab_Repo;
 
 
-    // ══════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════
     //  USUARIOS
-    // ══════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════
 
     public Usuario Usuario_Login(String username, String clave) {
         return usuario_Repo.findByUsername(username, clave);
     }
 
 
-    // ══════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════
     //  ADMINISTRADORES
-    // ══════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════
 
     public List<Administrador> findAll_Administradores() {
         return Admi_Repo.findAll();
@@ -58,9 +56,9 @@ public class Service {
     }
 
 
-    // ══════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════
     //  EMPRESAS
-    // ══════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════
 
     public List<Empresa> findAll_Empresas() {
         return Emp_Repo.findAll();
@@ -87,6 +85,13 @@ public class Service {
                 .orElseThrow(() -> new IllegalArgumentException("Empresa no existe"));
     }
 
+    /** Devuelve la Empresa asociada al id del Usuario logueado. */
+    public Empresa empresaByUsuario(Integer usuarioId) {
+        Empresa emp = Emp_Repo.findByUsuarioId(usuarioId);
+        if (emp == null) throw new IllegalArgumentException("No se encontró empresa para el usuario: " + usuarioId);
+        return emp;
+    }
+
     public void empresaUpdate(Empresa empresa) {
         if (!Emp_Repo.existsById(empresa.getId())) {
             throw new IllegalArgumentException("Empresa no existe");
@@ -107,9 +112,9 @@ public class Service {
     }
 
 
-    // ══════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════
     //  OFERENTES
-    // ══════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════
 
     public List<Oferente> findAll_Oferentes() {
         return Ofe_Repo.findAll();
@@ -136,9 +141,9 @@ public class Service {
     }
 
 
-    // ══════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════
     //  CARACTERÍSTICAS
-    // ══════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════
 
     public List<Caracteristicas> findAll_Caracteristicas() {
         return Carac_Repo.findAll();
@@ -173,52 +178,83 @@ public class Service {
     }
 
     /**
-     * Crea una característica nueva y la guarda en la BD.
-     * Si padreId es null o 0 se crea como raíz (sin padre).
-     * Si padreId tiene valor, se asigna como hijo de esa categoría.
+     * Crea una característica nueva.
+     * padreId == null o 0 → raíz (sin padre).
      */
     public void crearCaracteristica(String nombre, Integer padreId) {
         if (nombre == null || nombre.isBlank()) {
             throw new IllegalArgumentException("El nombre de la característica no puede estar vacío.");
         }
-
         Caracteristicas nueva = new Caracteristicas();
         nueva.setNombre(nombre.trim());
-
-        // Si viene un padreId válido, buscamos el padre y lo asignamos
         if (padreId != null && padreId > 0) {
             Caracteristicas padre = Carac_Repo.findById(padreId)
                     .orElseThrow(() -> new IllegalArgumentException("La categoría padre no existe."));
             nueva.setPadre(padre);
         }
-        // Si padreId es null o 0, setPadre no se llama → queda null → es raíz
-
         Carac_Repo.save(nueva);
     }
 
 
-    // ══════════════════════════════════════════════════════
-    //  PUESTO
-    // ══════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════
+    //  PUESTOS
+    // ══════════════════════════════════════════════════════════════
 
     public List<Puesto> findAll_puesto_emp() {
         return Puesto_Repo.findAll();
+    }
+
+    /**
+     * Top 5 puestos públicos — devuelve lista vacía si no hay ninguno
+     * para que la vista muestre el mensaje apropiado.
+     */
+    public List<Puesto> Top5_PuestosRecientes() {
+        List<Puesto> result = Puesto_Repo.findTop5Puestos();
+        return result != null ? result : Collections.emptyList();
+    }
+
+    /** Todos los puestos de una empresa concreta. */
+    public List<Puesto> puestosByEmpresa(Integer empresaId) {
+        return Puesto_Repo.findByEmpresaId(empresaId);
     }
 
     public void Puesto_emp_Add(Puesto puestoEmp) {
         Puesto_Repo.save(puestoEmp);
     }
 
-    public void Puesto_emp_delete(Integer id) {
-        Puesto_Repo.deleteById(id);
+    /**
+     * Crea un puesto nuevo para la empresa logueada y lo persiste.
+     */
+    public void crearPuesto(Empresa empresa, String descripcion, Integer salario, String tipo) {
+        Puesto p = new Puesto();
+        p.setEmpresa(empresa);
+        p.setDescripcion(descripcion);
+        p.setSalario(salario);
+        p.setTipo(tipo.toUpperCase());   // "PUBLICO" | "PRIVADO"
+        p.setEstado("ACTIVO");
+        p.setFecha(java.time.LocalDate.now().toString());
+        Puesto_Repo.save(p);
     }
 
-    public List<Puesto> Top5_PuestosRecientes() {
-        List<Puesto> result = Puesto_Repo.findTop5Puestos();
-        if (result == null || result.isEmpty()) {
-            throw new IllegalArgumentException("No hay suficientes puestos para mostrar");
-        }
-        return result;
+    /** Agrega una característica requerida a un puesto. */
+    public void agregarHabilidadPuesto(Integer puestoId, Integer caracteristicaId, Integer nivel) {
+        Puesto puesto = Puesto_Repo.findById(puestoId)
+                .orElseThrow(() -> new IllegalArgumentException("Puesto no existe"));
+        Caracteristicas carac = Carac_Repo.findById(caracteristicaId)
+                .orElseThrow(() -> new IllegalArgumentException("Característica no existe"));
+        PuestoHabilidades ph = new PuestoHabilidades();
+        ph.setPuesto(puesto);
+        ph.setHabilidad(carac);
+        ph.setNivel(nivel);
+        Puesto_hab_Repo.save(ph);
+    }
+
+    /** Desactiva un puesto: ACTIVO → INACTIVO. */
+    public void desactivarPuesto(Integer puestoId) {
+        Puesto p = Puesto_Repo.findById(puestoId)
+                .orElseThrow(() -> new IllegalArgumentException("Puesto no existe"));
+        p.setEstado("INACTIVO");
+        Puesto_Repo.save(p);
     }
 
     public Puesto PuestoRead(Integer id) {
@@ -238,9 +274,83 @@ public class Service {
     }
 
 
-    // ══════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════
+    //  BÚSQUEDA DE PUESTOS POR CARACTERÍSTICAS (página pública)
+    // ══════════════════════════════════════════════════════════════
+
+    /**
+     * Devuelve puestos PÚBLICOS y ACTIVOS que contengan al menos una
+     * de las características seleccionadas. Lista vacía si ids es vacío.
+     */
+    public List<Puesto> buscarPuestosPorCaracteristicas(List<Integer> ids) {
+        if (ids == null || ids.isEmpty()) return Collections.emptyList();
+        return Puesto_Repo.findPuestosPublicosByCaracteristicas(ids);
+    }
+
+
+    // ══════════════════════════════════════════════════════════════
+    //  COINCIDENCIA OFERENTE ↔ PUESTO
+    // ══════════════════════════════════════════════════════════════
+
+    /**
+     * DTO que encapsula el resultado de comparar un oferente con un puesto.
+     * porcentaje = (requisitos cumplidos / total requeridos) × 100
+     */
+    public static class ResultadoCandidato {
+        public final Oferente oferente;
+        public final int      requisitosTotal;
+        public final int      requisitosCumplidos;
+        public final double   porcentaje;
+
+        public ResultadoCandidato(Oferente oferente, int total, int cumplidos) {
+            this.oferente             = oferente;
+            this.requisitosTotal      = total;
+            this.requisitosCumplidos  = cumplidos;
+            this.porcentaje           = total > 0 ? (cumplidos * 100.0 / total) : 0.0;
+        }
+    }
+
+    /**
+     * Para un puesto dado, recorre todos los oferentes aprobados y calcula
+     * cuántos requisitos cumple cada uno (nivel oferente >= nivel requerido).
+     * Devuelve la lista ordenada de mayor a menor coincidencia.
+     */
+    public List<ResultadoCandidato> calcularCandidatos(Integer puestoId) {
+        List<PuestoHabilidades> requeridas = Puesto_hab_Repo.findByPuestoId(puestoId);
+        int total = requeridas.size();
+
+        List<Oferente> oferentes = Ofe_Repo.findAllByAprobadaOferente();
+        List<ResultadoCandidato> resultados = new ArrayList<>();
+
+        for (Oferente oferente : oferentes) {
+            List<OferenteHabilidades> habilidadesOferente =
+                    Oferente_hab_Repo.findByOferenteId(oferente.getId());
+
+            // Índice: caracteristicaId → nivel que tiene el oferente
+            Map<Integer, Integer> nivelOferente = new HashMap<>();
+            for (OferenteHabilidades oh : habilidadesOferente) {
+                nivelOferente.put(oh.getCaracteristicas().getId(), oh.getNivel());
+            }
+
+            int cumplidos = 0;
+            for (PuestoHabilidades req : requeridas) {
+                Integer nivelTiene = nivelOferente.get(req.getHabilidad().getId());
+                if (nivelTiene != null && nivelTiene >= req.getNivel()) {
+                    cumplidos++;
+                }
+            }
+
+            resultados.add(new ResultadoCandidato(oferente, total, cumplidos));
+        }
+
+        resultados.sort((a, b) -> Double.compare(b.porcentaje, a.porcentaje));
+        return resultados;
+    }
+
+
+    // ══════════════════════════════════════════════════════════════
     //  PUESTO HABILIDADES
-    // ══════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════
 
     public List<PuestoHabilidades> findAll_puesto_hab() {
         return Puesto_hab_Repo.findAll();
@@ -259,6 +369,10 @@ public class Service {
                 .orElseThrow(() -> new IllegalArgumentException("PuestoHabilidad no existe"));
     }
 
+    public List<PuestoHabilidades> habilidadesByPuesto(Integer puestoId) {
+        return Puesto_hab_Repo.findByPuestoId(puestoId);
+    }
+
     public List<PuestoHabilidades> findBySkill(String skill) {
         List<PuestoHabilidades> puestos = Puesto_hab_Repo.findAll();
         puestos.removeIf(p -> !p.getHabilidad().getNombre().equals(skill));
@@ -266,9 +380,9 @@ public class Service {
     }
 
 
-    // ══════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════
     //  OFERENTE HABILIDADES
-    // ══════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════
 
     public List<OferenteHabilidades> findAll_Oferente_hab() {
         return Oferente_hab_Repo.findAll();

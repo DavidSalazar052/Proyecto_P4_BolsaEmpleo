@@ -7,16 +7,17 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface EmpresaRepository extends JpaRepository<Empresa, Integer> {
-   //busca por el usuario_id (fk) de Usuario en la tabla
-    @Query("select e from Empresa e where e.usuario.id = ?1")
-    public Empresa findByUsuarioId(String usuarioId);
-    //
-    @Query("select e from Empresa e where e.aprobada = true")
-    public List<Empresa> findAllByAprobada();
 
-    @Query("select e from Empresa e where e.aprobada = false")
-    public List<Empresa> findAllByNoAprobada();
+    // Busca la empresa por el id del usuario logueado (FK usuario_id)
+    @Query("SELECT e FROM Empresa e WHERE e.usuario.id = ?1")
+    Empresa findByUsuarioId(Integer usuarioId);
 
-    @Query("select e from Empresa e where e.nombre like %?1%")
-    public List<Empresa> findByNombre(String nombre);
+    @Query("SELECT e FROM Empresa e WHERE e.aprobada = true")
+    List<Empresa> findAllByAprobada();
+
+    @Query("SELECT e FROM Empresa e WHERE e.aprobada = false")
+    List<Empresa> findAllByNoAprobada();
+
+    @Query("SELECT e FROM Empresa e WHERE e.nombre LIKE %?1%")
+    List<Empresa> findByNombre(String nombre);
 }
