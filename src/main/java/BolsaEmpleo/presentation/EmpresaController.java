@@ -58,7 +58,7 @@ public class EmpresaController {
 /*
 * package org.example.prestamoform.logic;
 
-import org.example.prestamoform.data.sql.PrestamoRepository;
+import org.example.prestamoform.data.sql.sql.PrestamoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;

@@ -1,6 +1,7 @@
 package BolsaEmpleo.presentation;
 
 import BolsaEmpleo.logic.Base.Empresa;
+import BolsaEmpleo.logic.Base.Oferente;
 import BolsaEmpleo.logic.Base.Usuario;
 import BolsaEmpleo.logic.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,17 +20,17 @@ public class LoginController {
     private Service service;
 
     @GetMapping("/login")
-    public String mostrarLogin(){
+    public String mostrarLogin() {
         return "presentation/login/viewLogin";
     }
 
     @GetMapping("/login/empresa")
-    public String mostrarRegistroEmpresa(){
+    public String mostrarRegistroEmpresa() {
         return "presentation/login/viewRegistroEmpresa";
     }
 
     @GetMapping("/login/oferente")
-    public String mostrarRegistroOferente(){
+    public String mostrarRegistroOferente() {
         return "presentation/login/viewRegistroOferente";
     }
 
@@ -44,22 +45,15 @@ public class LoginController {
             @RequestParam String telefono,
             @RequestParam String descripcion,
             Model model) {
-
         try {
-            // 1. UUID como String — la BD usa varchar(255) como PK, no autoincrement
-            String nuevoId = UUID.randomUUID().toString();
 
-            // 2. Creamos el Usuario con el ID ya puesto
             Usuario nuevoUsuario = new Usuario();
-            nuevoUsuario.setId(nuevoId);
             nuevoUsuario.setUsername(username);
             nuevoUsuario.setClave(clave);
             nuevoUsuario.setTipo("EMP");
 
-            // 3. Creamos la Empresa — @MapsId toma el ID del Usuario automáticamente
-            //    NO hace falta empresa.setId(nuevoId)
             Empresa nuevaEmpresa = new Empresa();
-            nuevaEmpresa.setUsuario(nuevoUsuario);   // esto es suficiente para el ID
+            nuevaEmpresa.setUsuario(nuevoUsuario);
             nuevaEmpresa.setNombre(nombre);
             nuevaEmpresa.setLocalizacion(localizacion);
             nuevaEmpresa.setCorreo(correo);
@@ -67,16 +61,60 @@ public class LoginController {
             nuevaEmpresa.setDescripcion(descripcion);
             nuevaEmpresa.setAprobada(false);
 
-            // 4. Service guarda Usuario primero, luego Empresa
             service.registrarEmpresa(nuevoUsuario, nuevaEmpresa);
 
             model.addAttribute("registroExito", true);
             return "presentation/login/viewRegistroEmpresa";
 
-        } catch (Exception e) {
+        } catch (Exception e){
             model.addAttribute("error", "Error al registrar: " + e.getMessage());
             return "presentation/login/viewRegistroEmpresa";
         }
     }
 
+    // ══════════════════════════════════════════════════════
+    //  POST — Registro Oferente
+    // ══════════════════════════════════════════════════════
+
+    @PostMapping("/registro/oferente")
+    public String registrarOferente(
+            @RequestParam String username,
+            @RequestParam String clave,
+            @RequestParam String nombre,
+            @RequestParam String apellido,
+            @RequestParam String nacionalidad,
+            @RequestParam String telefono,
+            @RequestParam String correo,
+            @RequestParam String residencia,
+            Model model) {
+
+        try {
+            // Usuario — el ID lo asigna la BD con IDENTITY (autoincrement)
+            Usuario nuevoUsuario = new Usuario();
+            nuevoUsuario.setUsername(username);
+            nuevoUsuario.setClave(clave);
+            nuevoUsuario.setTipo("OFE");
+
+            // Oferente — @MapsId toma el ID del Usuario una vez guardado
+            Oferente nuevoOferente = new Oferente();
+            nuevoOferente.setUsuario(nuevoUsuario);
+            nuevoOferente.setNombre(nombre);
+            nuevoOferente.setApellido(apellido);
+            nuevoOferente.setNacionalidad(nacionalidad);
+            nuevoOferente.setTelefono(telefono);
+            nuevoOferente.setCorreo(correo);
+            nuevoOferente.setResidencia(residencia);
+            nuevoOferente.setAprobado(false);
+
+            // Service guarda Usuario primero, luego Oferente
+            service.registrarOferente(nuevoUsuario, nuevoOferente);
+
+            model.addAttribute("registroExito", true);
+            return "presentation/Login/viewRegistroOferente";
+
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al registrar: " + e.getMessage());
+            return "presentation/Login/viewRegistroOferente";
+        }
+    }
 }

@@ -4,7 +4,7 @@ import BolsaEmpleo.logic.Base.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface UsuarioRepository extends JpaRepository<Usuario, String> {
+public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     //PARA VALIDACIÓN EN EL LOGIN
     @Query("select u from Usuario u where u.username = ?1 and u.clave = ?2")

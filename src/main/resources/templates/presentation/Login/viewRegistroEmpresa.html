@@ -22,37 +22,7 @@
 
 <body>
 
-<!-- ══════════════════════════════════════════════════════
-     SECCIÓN HERO  (misma clase .Inicio que usa viewLogin)
-     Reutilizamos el estilo de fondo azul degradado + imagen.
-     ══════════════════════════════════════════════════════ -->
-<section class="Inicio">
-
-    <!-- BARRA DE NAVEGACIÓN: idéntica a la de viewLogin -->
-    <nav class="navbar navbar-expand-lg navbar-custom">
-        <div class="container">
-            <p>
-                <img src="https://cdn-icons-png.flaticon.com/512/86/86155.png"
-                     alt="icono"
-                     style="width:50px;height:50px;filter: brightness(0) invert(1);">
-                <strong> Bolsa de Empleo</strong>
-            </p>
-            <div class="navbar-nav ms-auto align-items-center">
-                <!-- Volver al inicio público -->
-                <a class="nav-link" th:href="@{/}">Inicio</a>
-                <!-- Volver al login -->
-                <a class="nav-link" th:href="@{/login}">Iniciar sesión</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- TITULO HERO -->
-    <div class="container hero-content text-center">
-        <p class="hero-eyebrow">Únete a nuestra plataforma</p>
-        <h1 class="hero-title">Registro de Empresa</h1>
-    </div>
-
-</section>
+<section th:replace="~{presentation/fragmentPublic :: nav-var}"></section>
 
 
 <!-- ══════════════════════════════════════════════════════

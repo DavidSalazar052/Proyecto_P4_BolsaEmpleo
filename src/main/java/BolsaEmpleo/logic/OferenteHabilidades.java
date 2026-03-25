@@ -19,8 +19,8 @@ import lombok.Setter;
 public class OferenteHabilidades {
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     @ManyToOne
     @JoinColumn(name = "oferente_id")
     private Oferente oferente;

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface OferentesRepository extends JpaRepository<Oferente, String> {
+public interface OferentesRepository extends JpaRepository<Oferente, Integer> {
     @Query("select e from Oferente e where e.aprobado = true")
     public List<Oferente> findAllByAprobadaOferente();
 

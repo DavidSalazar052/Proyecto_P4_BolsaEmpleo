@@ -15,8 +15,8 @@ import lombok.Setter;
 
 public class Oferente {
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @OneToOne
     @MapsId
