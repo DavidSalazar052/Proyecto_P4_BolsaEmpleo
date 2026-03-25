@@ -1,33 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{presentation/fragmentPublic :: head}"></head>
-    <body>
+<body>
 
-    <section class="Inicio">
-        <nav class="navbar navbar-expand-lg navbar-custom">
-            <div class="container">
-                <p><img src="https://cdn-icons-png.flaticon.com/512/86/86155.png" alt="icono" style="width:50px;height:50px;filter: brightness(0) invert(1);"> <strong> Bolsa de Empleo</strong></p>
-
-                <div class="navbar-nav ms-auto align-items-centered">
-                    <a class="nav-link" th:href="@{/DashboardAdministrador}">Dashboard</a>
-
-                    <a class="nav-link" th:href="@{/EmpresasPendientes}">EMPRESAS pendientes</a>
-                    <a class="nav-link" th:href="@{/OferentesPendientes}">OFERENTES pendientes</a>
-
-                    <a class="nav-link" th:href="@{/AdminCaracteristicas}">Caracteristicas</a>
-                    <a class="nav-link" th:href="@{/DashboardOferente}">Reportes</a>
-                    <a class="nav-link" th:href="@{/login}">Logout</a>
-                </div>
+<section class="Inicio">
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <p class="mb-0 d-flex align-items-center">
+                <img src="https://cdn-icons-png.flaticon.com/512/86/86155.png"
+                     alt="icono"
+                     style="width:50px;height:50px;filter: brightness(0) invert(1);">
+                <strong class="ms-2 text-white"> Bolsa de Empleo</strong>
+            </p>
+            <div class="navbar-nav ms-auto align-items-center">
+                <a class="nav-link active" th:href="@{/DashboardAdministrador}">Dashboard</a>
+                <a class="nav-link" th:href="@{/EmpresasPendientes}">Empresas pendientes</a>
+                <a class="nav-link" th:href="@{/OferentesPendientes}">Oferentes pendientes</a>
+                <a class="nav-link" th:href="@{/AdminCaracteristicas}">Características</a>
+                <a class="nav-link" th:href="@{/admin/reportes}">Reportes</a>
+                <a class="nav-link" th:href="@{/logout}">Salir</a>
             </div>
-        </nav>
-    </section>
+        </div>
+    </nav>
+</section>
 
-    <div class="container hero-content text-center">
-        <p class="hero-eyebrow">Administrador:</p>
-        <h1 class="hero-title">Bienvenido</h1>
+<div class="container mt-5">
+    <h2 class="fw-bold">Administrador</h2>
+    <p class="text-muted">Aprobaciones, catálogo de características y reportes.</p>
+
+    <div class="d-flex gap-3 mt-4 flex-wrap">
+        <a th:href="@{/EmpresasPendientes}" class="btn btn-primary">
+            Empresas pendientes
+        </a>
+        <a th:href="@{/OferentesPendientes}" class="btn btn-primary">
+            Oferentes pendientes
+        </a>
+        <a th:href="@{/AdminCaracteristicas}" class="btn btn-primary">
+            Características
+        </a>
+        <a th:href="@{/admin/reportes}" class="btn btn-primary">
+            Reportes
+        </a>
     </div>
+</div>
 
-
-    <footer th:replace="~{presentation/fragmentPublic :: footer}"></footer>
-    </body>
+<footer th:replace="~{presentation/fragmentPublic :: footer}"></footer>
+</body>
 </html>

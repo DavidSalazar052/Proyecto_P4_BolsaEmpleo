@@ -1,12 +1,11 @@
 package BolsaEmpleo.logic;
 
 import BolsaEmpleo.data.*;
-
 import BolsaEmpleo.logic.Base.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 import java.util.List;
+
 @org.springframework.stereotype.Service
 public class Service {
 
@@ -23,13 +22,19 @@ public class Service {
     @Autowired private OferenteHabilidadRepository Oferente_hab_Repo;
 
 
-    // -- USUARIOS --
+    // ══════════════════════════════════════════════════════
+    //  USUARIOS
+    // ══════════════════════════════════════════════════════
+
     public Usuario Usuario_Login(String username, String clave) {
         return usuario_Repo.findByUsername(username, clave);
     }
 
 
-    // -- ADMINISTRADORES --
+    // ══════════════════════════════════════════════════════
+    //  ADMINISTRADORES
+    // ══════════════════════════════════════════════════════
+
     public List<Administrador> findAll_Administradores() {
         return Admi_Repo.findAll();
     }
@@ -38,28 +43,25 @@ public class Service {
         Admi_Repo.save(admi);
     }
 
-
     public void aprobarEmpresa(Integer id) {
-        // Buscamos la empresa — lanza excepción si no existe
         Empresa empresa = Emp_Repo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Empresa no encontrada: " + id));
-
-        // Cambiamos el flag y guardamos
         empresa.setAprobada(true);
         Emp_Repo.save(empresa);
     }
+
     public void aprobarOferente(Integer id) {
-        // Buscamos el oferente — lanza excepción si no existe
         Oferente oferente = Ofe_Repo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Oferente no encontrado: " + id));
-
-        // Cambiamos el flag y guardamos
         oferente.setAprobado(true);
         Ofe_Repo.save(oferente);
     }
 
 
-    // -- EMPRESAS --
+    // ══════════════════════════════════════════════════════
+    //  EMPRESAS
+    // ══════════════════════════════════════════════════════
+
     public List<Empresa> findAll_Empresas() {
         return Emp_Repo.findAll();
     }
@@ -105,7 +107,10 @@ public class Service {
     }
 
 
-    // -- OFERENTES --
+    // ══════════════════════════════════════════════════════
+    //  OFERENTES
+    // ══════════════════════════════════════════════════════
+
     public List<Oferente> findAll_Oferentes() {
         return Ofe_Repo.findAll();
     }
@@ -131,7 +136,10 @@ public class Service {
     }
 
 
-    // -- CARACTERISTICAS --
+    // ══════════════════════════════════════════════════════
+    //  CARACTERÍSTICAS
+    // ══════════════════════════════════════════════════════
+
     public List<Caracteristicas> findAll_Caracteristicas() {
         return Carac_Repo.findAll();
     }
@@ -164,8 +172,35 @@ public class Service {
         Carac_Repo.deleteById(id);
     }
 
+    /**
+     * Crea una característica nueva y la guarda en la BD.
+     * Si padreId es null o 0 se crea como raíz (sin padre).
+     * Si padreId tiene valor, se asigna como hijo de esa categoría.
+     */
+    public void crearCaracteristica(String nombre, Integer padreId) {
+        if (nombre == null || nombre.isBlank()) {
+            throw new IllegalArgumentException("El nombre de la característica no puede estar vacío.");
+        }
 
-    // -- PUESTO --
+        Caracteristicas nueva = new Caracteristicas();
+        nueva.setNombre(nombre.trim());
+
+        // Si viene un padreId válido, buscamos el padre y lo asignamos
+        if (padreId != null && padreId > 0) {
+            Caracteristicas padre = Carac_Repo.findById(padreId)
+                    .orElseThrow(() -> new IllegalArgumentException("La categoría padre no existe."));
+            nueva.setPadre(padre);
+        }
+        // Si padreId es null o 0, setPadre no se llama → queda null → es raíz
+
+        Carac_Repo.save(nueva);
+    }
+
+
+    // ══════════════════════════════════════════════════════
+    //  PUESTO
+    // ══════════════════════════════════════════════════════
+
     public List<Puesto> findAll_puesto_emp() {
         return Puesto_Repo.findAll();
     }
@@ -203,10 +238,10 @@ public class Service {
     }
 
 
-    //PARA EL BUSCA PUESTO
+    // ══════════════════════════════════════════════════════
+    //  PUESTO HABILIDADES
+    // ══════════════════════════════════════════════════════
 
-
-    // -- PUESTO HABILIDADES --
     public List<PuestoHabilidades> findAll_puesto_hab() {
         return Puesto_hab_Repo.findAll();
     }
@@ -231,7 +266,10 @@ public class Service {
     }
 
 
-    // -- OFERENTE HABILIDADES --
+    // ══════════════════════════════════════════════════════
+    //  OFERENTE HABILIDADES
+    // ══════════════════════════════════════════════════════
+
     public List<OferenteHabilidades> findAll_Oferente_hab() {
         return Oferente_hab_Repo.findAll();
     }

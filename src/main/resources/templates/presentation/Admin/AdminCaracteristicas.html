@@ -17,9 +17,12 @@
             </p>
             <div class="navbar-nav ms-auto align-items-center">
                 <a class="nav-link" th:href="@{/DashboardAdministrador}">Dashboard</a>
-                <a class="nav-link" th:href="@{/EmpresasPendientes}">Empresas pendientes</a>
-                <a class="nav-link" th:href="@{/OferentesPendientes}">Oferentes pendientes</a>
-                <a class="nav-link active" th:href="@{/admin/caracteristicas}">Características</a>
+
+                <a class="nav-link" th:href="@{/EmpresasPendientes}">EMPRESAS pendientes</a>
+                <a class="nav-link" th:href="@{/OferentesPendientes}">OFERENTES pendientes</a>
+
+                <a class="nav-link" th:href="@{/AdminCaracteristicas}">Caracteristicas</a>
+                <a class="nav-link" th:href="@{/DashboardOferente}">Reportes</a>
                 <a class="nav-link" th:href="@{/login}">Logout</a>
             </div>
         </div>
@@ -33,7 +36,7 @@
             <h5 class="titulo-seccion">Características registradas</h5>
 
             <div th:if="${exito}" class="alert alert-success mb-3">
-                ✅ Característica creada correctamente.
+                 Característica creada correctamente.
             </div>
             <div th:if="${error}" class="alert alert-danger mb-3" th:text="${error}"></div>
 

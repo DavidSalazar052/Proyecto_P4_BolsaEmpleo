@@ -1,7 +1,9 @@
 package BolsaEmpleo.presentation;
 
 import BolsaEmpleo.logic.Base.Empresa;
+import BolsaEmpleo.logic.Base.Usuario;
 import BolsaEmpleo.logic.Service;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,22 +20,33 @@ public class EmpresaController {
     private Service service;
 
     @GetMapping("/DashboardEmpresa")
-    public String mostrar_DashboardEmpresa() {
+    public String mostrar_DashboardEmpresa(HttpSession session, Model model) {
+        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
+        if (usuario == null || !"EMP".equals(usuario.getTipo())) {
+            return "redirect:/login";
+        }
+        model.addAttribute("usuario", usuario);
         return "presentation/Empresa/DashboardEmpresa";
     }
 
     @PostMapping("/create")
-    public String crear_empresa(Model model, @ModelAttribute @Validated Empresa empresa, BindingResult result) {
+    public String crear_empresa(HttpSession session, Model model,
+                                @ModelAttribute @Validated Empresa empresa,
+                                BindingResult result) {
+        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
+        if (usuario == null || !"EMP".equals(usuario.getTipo())) {
+            return "redirect:/login";
+        }
         if (result.hasErrors()) {
             model.addAttribute("empresas", empresa);
             return "presentation/Empresa/viewRegistroEmpresa";
         }
         try {
             service.EmpresasAdd(empresa);
-            return "presentation/Empresa/viewRegistroEmpresa";
-
+            return "redirect:/DashboardEmpresa";
         } catch (Exception e) {
-            result.addError(new FieldError("prestamo", "id", empresa.getId(), false, null, null, "empresa ya existe"));
+            result.addError(new FieldError("empresa", "id", empresa.getId(),
+                    false, null, null, "Empresa ya existe"));
             model.addAttribute("editing", false);
             return "presentation/Empresa/viewRegistroEmpresa";
         }
