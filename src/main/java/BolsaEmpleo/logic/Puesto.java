@@ -15,7 +15,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Puesto {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "empresa_id")

@@ -11,6 +11,33 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
+<section class ="Inicio" th:fragment ="nav-var">
+    <!--NAVBAR DE LA PAGINA-->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <p><img src="https://cdn-icons-png.flaticon.com/512/86/86155.png" alt="icono" style="width:50px;height:50px;filter: brightness(0) invert(1);"> <strong> Bolsa de Empleo</strong></p>
+
+            <div class="navbar-nav ms-auto align-items-center">
+                <a class="nav-link" th:href="@{/buscaPuesto}">Buscar Puesto</a>
+                <a class="nav-link" th:href="@{/DashboardAdministrador}">DASHBOARDADMINISTRADOR</a>
+                <a class="nav-link" th:href="@{/DashboardEmpresa}">DASHBOARDEMPRESA</a>
+                <a class="nav-link" th:href="@{/DashboardOferente}">DASHBOARDOFERENTE</a>
+                <a class="nav-link" href="#">Empresas</a>
+                <a class="nav-link" href="#">Habilidades</a>
+                <a class="nav-link" th:href="@{/login}">Login</a>
+
+            </div>
+        </div>
+    </nav>
+
+
+    <!--CONTENIDO PRINCIPAL-->
+    <div class="container hero-content text-center">
+        <p class="hero-eyebrow">¿Buscas tu proximo gran proyecto?</p>
+        <h1 class="hero-title">Encuentra tu próximo empleo</h1>
+    </div>
+</section>
+
 
 <!--PIE DE PAGINA PUBLICA-->
 <footer th:fragment ="footer" class="centered">

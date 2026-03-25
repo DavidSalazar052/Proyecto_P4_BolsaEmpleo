@@ -15,7 +15,8 @@ import lombok.Setter;
 
 public class Empresa {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @OneToOne
     @MapsId

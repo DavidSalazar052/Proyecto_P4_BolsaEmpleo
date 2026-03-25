@@ -39,7 +39,7 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    min-height: 420px;
+    min-height: 100px;
     display: flex;
     flex-direction: column;
 }

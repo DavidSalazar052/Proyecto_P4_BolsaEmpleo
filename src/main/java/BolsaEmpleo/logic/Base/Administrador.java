@@ -15,7 +15,8 @@ import lombok.Setter;
 
 public class Administrador {
     @Id
-    private String id;//PK FK
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;//PK FK
 
     @OneToOne
     @MapsId

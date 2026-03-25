@@ -15,7 +15,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Caracteristicas {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     private String nombre;
     // esto me lo tiro el Intellij para el tema de la relación ciclica (josue)

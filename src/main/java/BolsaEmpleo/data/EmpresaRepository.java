@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface EmpresaRepository extends JpaRepository<Empresa, String> {
+public interface EmpresaRepository extends JpaRepository<Empresa, Integer> {
    //busca por el usuario_id (fk) de Usuario en la tabla
     @Query("select e from Empresa e where e.usuario.id = ?1")
     public Empresa findByUsuarioId(String usuarioId);

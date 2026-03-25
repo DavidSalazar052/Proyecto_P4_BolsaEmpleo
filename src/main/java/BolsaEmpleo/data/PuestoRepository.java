@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface PuestoRepository extends JpaRepository<Puesto,String>  {
+public interface PuestoRepository extends JpaRepository<Puesto,Integer>  {
     @Query(value = "SELECT * FROM puesto WHERE tipo = 'publico' LIMIT 5", nativeQuery = true)
     public List<Puesto> findTop5Puestos();
 

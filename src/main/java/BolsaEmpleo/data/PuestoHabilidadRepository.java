@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 
-public interface PuestoHabilidadRepository extends JpaRepository<PuestoHabilidades, String> {
+public interface PuestoHabilidadRepository extends JpaRepository<PuestoHabilidades, Integer> {
 }
 
 

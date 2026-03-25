@@ -24,7 +24,7 @@
 </section>
 
 <table class="tabla-simple"
-       th:if="${empresasPendientes != null and !#lists.isEmpty(empresasPendientes)}">
+       th:if="${oferentesPendientes != null and !#lists.isEmpty(oferentesPendientes)}">
 
     <thead>
     <tr>
@@ -33,10 +33,10 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="e : ${empresasPendientes}">
+    <tr th:each="e : ${oferentesPendientes}">
         <td th:text="${e.correo}"></td>
         <td>
-            <form th:action="@{/admin/empresas/aprobar}" method="post">
+            <form th:action="@{/admin/oferentes/aprobar}" method="post">
                 <input type="hidden" name="id" th:value="${e.id}" />
                 <button type="submit" class="btn-aprobar-simple">
                     Aprobar y generar clave
@@ -49,7 +49,7 @@
 </table>
 
 <div class="estado-vacio"
-     th:if="${empresasPendientes == null or #lists.isEmpty(empresasPendientes)}">
+     th:if="${oferentesPendientes == null or #lists.isEmpty(oferentesPendientes)}">
 
     <section>
         <div class="container hero-content">

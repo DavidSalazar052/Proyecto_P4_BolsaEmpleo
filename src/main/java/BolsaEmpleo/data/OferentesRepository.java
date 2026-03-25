@@ -10,12 +10,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface OferentesRepository extends JpaRepository<Oferente, String> {
-    @Query("select e from Empresa e where e.usuario.id = ?1")
-    public Oferente findByUsuarioId(String usuarioId);
-    //
-    @Query("select e from Empresa e where e.aprobada = true")
-    public List<Oferente> findAllByAprobada();
+public interface OferentesRepository extends JpaRepository<Oferente, Integer> {
+    @Query("select e from Oferente e where e.aprobado = true")
+    public List<Oferente> findAllByAprobadaOferente();
 
     @Query("select e from Empresa e where e.aprobada = false")
     public List<Oferente> findAllByNoAprobada();
