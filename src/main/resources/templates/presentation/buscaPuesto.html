@@ -1,8 +1,24 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{presentation/fragmentPublic :: head}"></head>
 <body>
 
+<!--
+    ╔══════════════════════════════════════════════════════════════╗
+    ║  VISTA: Buscar Puestos por Características                   ║
+    ║  Ruta GET:  /buscaPuesto              (carga la página)      ║
+    ║  Ruta GET:  /buscaPuesto?ids=1&ids=3  (resultado búsqueda)   ║
+    ║                                                              ║
+    ║  El controlador inyecta al model:                            ║
+    ║    - padres     → List<Caracteristicas> sin padre            ║
+    ║    - hijos      → Map<Integer, List<Caracteristicas>>        ║
+    ║                   (clave = id del padre)                     ║
+    ║    - puestos    → List<Puesto> resultado de la búsqueda      ║
+    ║                   (null si aún no se buscó)                  ║
+    ╚══════════════════════════════════════════════════════════════╝
+-->
+
+<!-- NAVBAR igual que el resto de vistas públicas -->
 <section class="Inicio">
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container">
@@ -14,155 +30,143 @@
             </p>
             <div class="navbar-nav ms-auto align-items-center">
                 <a class="nav-link" th:href="@{/}">Inicio</a>
+                <a class="nav-link" th:href="@{/login}">Login</a>
             </div>
         </div>
     </nav>
 </section>
 
 
+<!-- ══════════════════════════════════════════════════════
+     PANEL DE FILTROS CON CHECKBOXES DINÁMICOS
+     ══════════════════════════════════════════════════════ -->
 <div class="contenedor-filtros">
     <h4>Buscar puestos por características</h4>
 
     <!--
-        PUNTO 1:
-        - th:action apunta al endpoint correcto
-        - method="get" para que los params vayan en la URL
-        - Todos los checkboxes usan name="habilidades"
-        - El value debe ser el ID real de la característica en la BD
+        FORMULARIO — method GET para que los ids queden en la URL.
+        Todos los checkboxes usan name="ids" (Integer).
+        El controlador recibe: @RequestParam List<Integer> ids
     -->
     <form th:action="@{/buscaPuesto}" method="get">
 
         <div class="seccion-scroll">
 
-            <div class="grupo-categoria">
+            <!--
+                ITERAMOS LOS PADRES que vienen del model (padres = findPadres()).
+                Por cada padre preguntamos si tiene hijos usando el Map hijos.
+                Si hijos[padre.id] no está vacío → mostramos el bloque sub-opciones.
+            -->
+            <div class="grupo-categoria"
+                 th:each="padre : ${padres}">
+
+                <!-- Fila del padre -->
                 <div class="categoria-padre">
-                    <input type="checkbox" id="motores" name="habilidades" value="CAR-MOTORES">
-                    <label for="motores">Motores de BD</label>
+                    <input type="checkbox"
+                           th:id="'car-' + ${padre.id}"
+                           name="ids"
+                           th:value="${padre.id}">
+                    <label th:for="'car-' + ${padre.id}"
+                           th:text="${padre.nombre}">
+                    </label>
                 </div>
-                <div class="sub-opciones">
-                    <div class="item">
-                        <input type="checkbox" id="mysql" name="habilidades" value="CAR-MYSQL">
-                        <label for="mysql">MySQL</label>
-                    </div>
-                    <div class="item">
-                        <input type="checkbox" id="oracle" name="habilidades" value="CAR-ORACLE">
-                        <label for="oracle">Oracle</label>
-                    </div>
-                </div>
-            </div>
 
-            <div class="grupo-categoria">
-                <div class="categoria-padre">
-                    <input type="checkbox" id="ciber" name="habilidades" value="CAR-CIBER">
-                    <label for="ciber">Ciberseguridad</label>
-                </div>
-            </div>
-
-            <div class="grupo-categoria">
-                <div class="categoria-padre">
-                    <input type="checkbox" id="lenguajes" name="habilidades" value="CAR-LENGUAJES">
-                    <label for="lenguajes">Lenguajes de Programación</label>
-                </div>
-                <div class="sub-opciones">
-                    <div class="item">
-                        <input type="checkbox" id="csharp" name="habilidades" value="CAR-CSHARP">
-                        <label for="csharp">C#</label>
-                    </div>
-                    <div class="item">
-                        <input type="checkbox" id="java" name="habilidades" value="CAR-JAVA">
-                        <label for="java">Java</label>
-                    </div>
-                    <div class="item">
-                        <input type="checkbox" id="kotlin" name="habilidades" value="CAR-KOTLIN">
-                        <label for="kotlin">Kotlin</label>
+                <!--
+                    Sub-opciones: solo se renderizan si hay hijos para este padre.
+                    hijos es un Map<Integer, List<Caracteristicas>> construido en el controller.
+                    Usamos hijos[padre.id] para acceder a la lista de hijos de cada padre.
+                -->
+                <div class="sub-opciones"
+                     th:if="${hijos[padre.id] != null and not #lists.isEmpty(hijos[padre.id])}">
+                    <div class="item"
+                         th:each="hijo : ${hijos[padre.id]}">
+                        <input type="checkbox"
+                               th:id="'car-' + ${hijo.id}"
+                               name="ids"
+                               th:value="${hijo.id}">
+                        <label th:for="'car-' + ${hijo.id}"
+                               th:text="${hijo.nombre}">
+                        </label>
                     </div>
                 </div>
-            </div>
 
-            <div class="grupo-categoria">
-                <div class="categoria-padre">
-                    <input type="checkbox" id="datab" name="habilidades" value="CAR-DATABASES">
-                    <label for="datab">Bases de Datos</label>
-                </div>
-                <div class="sub-opciones">
-                    <div class="item">
-                        <input type="checkbox" id="modelado" name="habilidades" value="CAR-MODELADO">
-                        <label for="modelado">Modelado</label>
-                    </div>
-                </div>
-            </div>
+            </div><!-- /grupo-categoria -->
 
-            <div class="grupo-categoria">
-                <div class="categoria-padre">
-                    <input type="checkbox" id="web" name="habilidades" value="CAR-WEB">
-                    <label for="web">Tecnologías Web</label>
-                </div>
-            </div>
+            <!-- Si no hay ninguna característica en la BD -->
+            <p th:if="${padres == null or #lists.isEmpty(padres)}"
+               class="text-muted small">
+                No hay características registradas aún.
+            </p>
 
-            <div class="grupo-categoria">
-                <div class="categoria-padre">
-                    <input type="checkbox" id="testing" name="habilidades" value="CAR-TESTING">
-                    <label for="testing">Testing</label>
-                </div>
-                <div class="sub-opciones">
-                    <div class="item">
-                        <input type="checkbox" id="junit" name="habilidades" value="CAR-JUNIT">
-                        <label for="junit">JUnit</label>
-                    </div>
-                    <div class="item">
-                        <input type="checkbox" id="assertions" name="habilidades" value="CAR-ASSERTIONS">
-                        <label for="assertions">Assertions</label>
-                    </div>
-                </div>
-            </div>
+        </div><!-- /seccion-scroll -->
 
-            <div class="seccion-botones">
-                <button type="submit" class="btn-azul">Buscar</button>
-                <button type="reset" class="btn-blanco">Limpiar</button>
-            </div>
-
+        <div class="seccion-botones">
+            <button type="submit" class="btn-azul">Buscar</button>
+            <button type="reset"  class="btn-blanco">Limpiar</button>
         </div>
+
     </form>
 </div>
 
 
-<!--
-    PUNTO 1: Mostrar resultados
-    - th:if para manejar lista vacía vs con resultados
-    - Mismo patrón de card que viewpublic.html para consistencia
--->
+<!-- ══════════════════════════════════════════════════════
+     RESULTADOS DE LA BÚSQUEDA
+     puestos == null  → todavía no se hizo ninguna búsqueda
+     puestos vacío    → se buscó pero no hubo coincidencias
+     puestos con datos → mostramos las tarjetas
+     ══════════════════════════════════════════════════════ -->
 <div class="MostrarPuestos">
 
-    <!-- Mensaje cuando no se ha buscado aún o no hay resultados -->
-    <p th:if="${puestos == null or #lists.isEmpty(puestos)}"
+    <!-- No se ha buscado todavía (primera carga de la página) -->
+    <p th:if="${puestos == null}"
+       style="text-align:center; padding: 2rem; color: #666;">
+        Seleccioná una o más características y presioná <strong>Buscar</strong>.
+    </p>
+
+    <!-- Se buscó pero no hay puestos que coincidan -->
+    <p th:if="${puestos != null and #lists.isEmpty(puestos)}"
        style="text-align:center; padding: 2rem; color: #666;">
         No se encontraron puestos con las características seleccionadas.
     </p>
 
-    <!-- Grid de puestos cuando sí hay resultados -->
-    <div class="grid-puestos" th:if="${puestos != null and not #lists.isEmpty(puestos)}">
+    <!-- Grid de tarjetas con los puestos encontrados -->
+    <div class="grid-puestos"
+         th:if="${puestos != null and not #lists.isEmpty(puestos)}">
+
+        <!--
+            Iteramos la lista de Puesto.
+            p.empresa puede ser null si el puesto no tiene empresa asignada,
+            por eso usamos el operador ?: para mostrar un fallback.
+        -->
         <div class="card-puesto" th:each="p : ${puestos}">
 
-            <h3 style="font-weight: bold;" th:text="${p.empresa != null ? p.empresa.nombre : 'Empresa'}"></h3>
+            <!-- Nombre de la empresa -->
+            <h3 style="font-weight:bold;"
+                th:text="${p.empresa != null ? p.empresa.nombre : 'Empresa'}">
+            </h3>
+
+            <!-- Descripción del puesto -->
             <p class="titulo" th:text="${p.descripcion}"></p>
+
+            <!-- Salario -->
             <p class="salario" th:text="'₡ ' + ${p.salario}"></p>
 
-            <button class="btn-detalle">Ver detalle</button>
-
-            <!-- Detalle oculto -->
+            <!-- Overlay de detalle al hacer hover (mismo patrón que viewpublic.html) -->
             <div class="detalle">
-                <p><strong>Tipo:</strong> <span th:text="${p.tipo}"></span></p>
-                <p><strong>Estado:</strong> <span th:text="${p.estado}"></span></p>
-                <p><strong>Fecha:</strong> <span th:text="${p.fecha}"></span></p>
+                <p><strong>Tipo:</strong>
+                    <span th:text="${p.tipo}"></span></p>
+                <p><strong>Estado:</strong>
+                    <span th:text="${p.estado}"></span></p>
+                <p><strong>Fecha:</strong>
+                    <span th:text="${p.fecha}"></span></p>
             </div>
 
-        </div>
-    </div>
+        </div><!-- /card-puesto -->
+    </div><!-- /grid-puestos -->
 
-</div>
+</div><!-- /MostrarPuestos -->
 
 
 <footer th:replace="~{presentation/fragmentPublic :: footer}"></footer>
-
 </body>
 </html>

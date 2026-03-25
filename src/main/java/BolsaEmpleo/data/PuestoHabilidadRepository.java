@@ -11,6 +11,10 @@ import java.util.List;
 
 
 public interface PuestoHabilidadRepository extends JpaRepository<PuestoHabilidades, Integer> {
+    @Query("SELECT DISTINCT ph.puesto FROM PuestoHabilidades ph " +
+            "WHERE ph.habilidad.id IN :ids " +
+            "AND ph.puesto.tipo = 'publico'")
+    List<Puesto> findPuestosPublicosByCaracteristicas(List<Integer> ids);
 }
 
 

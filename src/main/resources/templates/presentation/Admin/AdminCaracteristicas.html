@@ -1,10 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <th:block th:replace="~{presentation/fragmentPublic :: head}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/admin_caracteristicas.css}">
 </head>
 <body>
 
+<section class="Inicio">
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <p class="mb-0 d-flex align-items-center">
+                <img src="https://cdn-icons-png.flaticon.com/512/86/86155.png"
+                     alt="icono"
+                     style="width:50px;height:50px;filter: brightness(0) invert(1);">
+                <strong class="ms-2 text-white"> Bolsa de Empleo</strong>
+            </p>
+            <div class="navbar-nav ms-auto align-items-center">
+                <a class="nav-link" th:href="@{/DashboardAdministrador}">Dashboard</a>
+                <a class="nav-link" th:href="@{/EmpresasPendientes}">Empresas pendientes</a>
+                <a class="nav-link" th:href="@{/OferentesPendientes}">Oferentes pendientes</a>
+                <a class="nav-link active" th:href="@{/admin/caracteristicas}">Características</a>
+                <a class="nav-link" th:href="@{/login}">Logout</a>
+            </div>
+        </div>
+    </nav>
+</section>
+
+<div class="container main-content">
+    <div class="row">
+
+        <div class="col-md-7">
+            <h5 class="titulo-seccion">Características registradas</h5>
+
+            <div th:if="${exito}" class="alert alert-success mb-3">
+                ✅ Característica creada correctamente.
+            </div>
+            <div th:if="${error}" class="alert alert-danger mb-3" th:text="${error}"></div>
+
+            <div class="ruta-navegacion mb-3">
+                <span class="badge-ruta">Raíces</span>
+            </div>
+
+            <p th:if="${padres == null or #lists.isEmpty(padres)}" class="text-muted">
+                Aún no hay características. Creá la primera usando el formulario.
+            </p>
+
+            <ul class="lista-caracteristicas" th:if="${padres != null and not #lists.isEmpty(padres)}">
+                <li th:each="padre : ${padres}" class="item-padre">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="nombre-padre" th:text="${padre.nombre}"></span>
+                        <span class="badge-tipo-padre">Categoría</span>
+                    </div>
+
+                    <ul class="lista-hijos" th:if="${hijos[padre.id] != null and not #lists.isEmpty(hijos[padre.id])}">
+                        <li th:each="hijo : ${hijos[padre.id]}" class="item-hijo" th:text="${hijo.nombre}"></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-md-5">
+            <div class="card card-formulario p-4">
+                <h5 class="fw-bold mb-3" style="color: var(--azul-oscuro);">
+                    Agregar Característica
+                </h5>
+
+                <form method="POST" th:action="@{/admin/caracteristicas/crear}">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
+                        <input type="text" name="nombre" class="form-control" placeholder="ej: Java, Docker..." required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Padre (categoría)</label>
+                        <select name="padreId" class="form-select">
+                            <option value="">(sin padre — crear como categoría raíz)</option>
+                            <option th:each="c : ${todas}" th:value="${c.id}" th:text="${c.nombre}"></option>
+                        </select>
+                        <div class="form-text">Si elegís "(sin padre)", se crea como categoría principal.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary-custom w-100">
+                        Crear característica
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{presentation/fragmentPublic :: footer}"></footer>
 </body>
 </html>

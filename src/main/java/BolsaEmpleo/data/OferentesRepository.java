@@ -11,13 +11,17 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface OferentesRepository extends JpaRepository<Oferente, Integer> {
-    @Query("select e from Oferente e where e.aprobado = true")
-    public List<Oferente> findAllByAprobadaOferente();
 
-    @Query("select e from Empresa e where e.aprobada = false")
-    public List<Oferente> findAllByNoAprobada();
+        // Oferentes ya aprobados
+        @Query("select o from Oferente o where o.aprobado = true")
+        List<Oferente> findAllByAprobadaOferente();
 
-    @Query("select e from Empresa e where e.nombre like %?1%")
-    public List<Oferente> findByNombre(String nombre);
+        // Oferentes pendientes de aprobación — usado por el Admin
+        @Query("select o from Oferente o where o.aprobado = false")
+        List<Oferente> findAllByNoAprobadaOferente();
+
+        // Búsqueda por nombre (por si se necesita en el futuro)
+        @Query("select o from Oferente o where o.nombre like %?1%")
+        List<Oferente> findByNombre(String nombre);
 
 }

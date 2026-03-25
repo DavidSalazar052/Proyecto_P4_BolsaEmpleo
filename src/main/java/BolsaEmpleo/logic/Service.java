@@ -39,6 +39,26 @@ public class Service {
     }
 
 
+    public void aprobarEmpresa(Integer id) {
+        // Buscamos la empresa — lanza excepción si no existe
+        Empresa empresa = Emp_Repo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Empresa no encontrada: " + id));
+
+        // Cambiamos el flag y guardamos
+        empresa.setAprobada(true);
+        Emp_Repo.save(empresa);
+    }
+    public void aprobarOferente(Integer id) {
+        // Buscamos el oferente — lanza excepción si no existe
+        Oferente oferente = Ofe_Repo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Oferente no encontrado: " + id));
+
+        // Cambiamos el flag y guardamos
+        oferente.setAprobado(true);
+        Ofe_Repo.save(oferente);
+    }
+
+
     // -- EMPRESAS --
     public List<Empresa> findAll_Empresas() {
         return Emp_Repo.findAll();
@@ -181,6 +201,9 @@ public class Service {
     public void PuestoDelete(Integer id) {
         Puesto_Repo.deleteById(id);
     }
+
+
+    //PARA EL BUSCA PUESTO
 
 
     // -- PUESTO HABILIDADES --
