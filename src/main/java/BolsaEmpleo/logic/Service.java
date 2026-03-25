@@ -395,4 +395,76 @@ public class Service {
     public void Oferente_hab_Delete(Integer id) {
         Oferente_hab_Repo.deleteById(id);
     }
+
+
+
+
+
+
+    //---------------------------COLOQUELO DESPUES DE ESTO --------------------------------------------
+
+
+    // ─────────────────────────────────────────────────────────────────────────────
+//  MÉTODOS NUEVOS — agregalos al Service.java existente dentro de la clase
+//  Service, en la sección "OFERENTES" y "OFERENTE HABILIDADES"
+// ─────────────────────────────────────────────────────────────────────────────
+
+    // ──────────────────────────────────────────────────────────────
+    //  OFERENTES — obtener por usuario (nuevo)
+    // ──────────────────────────────────────────────────────────────
+
+    /**
+     * Devuelve el Oferente cuyo usuario_id coincide con el id del usuario en sesión.
+     * Útil para que el OferenteController no dependa del id del Oferente directamente.
+     */
+    public Oferente oferenteByUsuario(Integer usuarioId) {
+        // Recorremos todos los oferentes y buscamos el que tenga ese usuario_id.
+        // Si el OferentesRepository ya tiene un método findByUsuarioId, úsalo directo.
+        return Ofe_Repo.findAll().stream()
+                .filter(o -> o.getUsuario().getId().equals(usuarioId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "No se encontró oferente para el usuario: " + usuarioId));
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    //  OFERENTE HABILIDADES — agregar (nuevo)
+    // ──────────────────────────────────────────────────────────────
+
+    /**
+     * Agrega una habilidad al oferente. Si ya existe la misma característica
+     * para ese oferente, actualiza el nivel en lugar de duplicar.
+     */
+    public void agregarHabilidadOferente(Integer oferenteId,
+                                         Integer caracteristicaId,
+                                         Integer nivel) {
+        Oferente oferente = Ofe_Repo.findById(oferenteId)
+                .orElseThrow(() -> new IllegalArgumentException("Oferente no existe"));
+        Caracteristicas carac = Carac_Repo.findById(caracteristicaId)
+                .orElseThrow(() -> new IllegalArgumentException("Característica no existe"));
+
+        // Verificar si ya existe esa característica para el oferente
+        List<OferenteHabilidades> existentes = Oferente_hab_Repo.findByOferenteId(oferenteId);
+        OferenteHabilidades habilidadExistente = existentes.stream()
+                .filter(h -> h.getCaracteristicas().getId().equals(caracteristicaId))
+                .findFirst()
+                .orElse(null);
+
+        if (habilidadExistente != null) {
+            // Actualizar nivel
+            habilidadExistente.setNivel(nivel);
+            Oferente_hab_Repo.save(habilidadExistente);
+        } else {
+            // Crear nueva
+            OferenteHabilidades nueva = new OferenteHabilidades();
+            nueva.setOferente(oferente);
+            nueva.setCaracteristicas(carac);
+            nueva.setNivel(nivel);
+            Oferente_hab_Repo.save(nueva);
+        }
+    }
+
+
+
+
 }

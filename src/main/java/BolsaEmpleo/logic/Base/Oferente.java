@@ -31,10 +31,19 @@ public class Oferente {
     private String telefono;
     private String correo;
     private String residencia;
-
     //Para que el Administrador la apruebe
     private boolean aprobado = false;
+
+
+
+    // Currículum en formato PDF (guardado como bytes en la BD)
+    @Lob
+    @Column(name = "curriculum", columnDefinition = "LONGBLOB")
+    private byte[] curriculum;
+
 }
 /*
 * ID(pk) - Nombre - Apellido - Pais - Telefono -correo -residencia -aprobada
 * */
+
+

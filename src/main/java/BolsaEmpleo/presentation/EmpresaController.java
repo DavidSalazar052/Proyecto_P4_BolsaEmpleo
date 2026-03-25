@@ -4,15 +4,17 @@ import BolsaEmpleo.logic.Base.Empresa;
 import BolsaEmpleo.logic.Base.Oferente;
 import BolsaEmpleo.logic.Base.Caracteristicas;
 import BolsaEmpleo.logic.Base.Usuario;
+import BolsaEmpleo.logic.OferenteHabilidades;
 import BolsaEmpleo.logic.Puesto;
 import BolsaEmpleo.logic.Service;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -105,7 +107,6 @@ public class EmpresaController {
     @GetMapping("/empresa/puestos/nuevo")
     public String mostrar_NuevoPuesto(HttpSession session, Model model) {
         if (!esEmpresa(session)) return "redirect:/login";
-        // Pasamos todas las características para el selector de habilidades
         model.addAttribute("caracteristicas", service.findAll_Caracteristicas());
         return "presentation/Empresa/NuevoPuesto";
     }
@@ -151,7 +152,7 @@ public class EmpresaController {
 
     @GetMapping("/empresa/puestos/{id}")
     public String mostrar_DetallePuesto(
-            @org.springframework.web.bind.annotation.PathVariable Integer id,
+            @PathVariable Integer id,
             HttpSession session, Model model) {
 
         if (!esEmpresa(session)) return "redirect:/login";
@@ -194,20 +195,63 @@ public class EmpresaController {
     }
 
     // ══════════════════════════════════════════════════════════════
-    //  VER DETALLE DE UN OFERENTE (desde búsqueda de candidatos)
+    //  VER DETALLE DE UN OFERENTE (incluye habilidades + estado CV)
     // ══════════════════════════════════════════════════════════════
 
     @GetMapping("/empresa/candidatos/detalle")
     public String mostrar_DetalleOferente(
             @RequestParam Integer oferenteId,
+            @RequestParam(required = false) Integer puestoId,
             HttpSession session, Model model) {
 
         if (!esEmpresa(session)) return "redirect:/login";
+
         Oferente oferente = service.findAll_Oferentes().stream()
                 .filter(o -> o.getId().equals(oferenteId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Oferente no encontrado"));
+
+        List<OferenteHabilidades> habilidades =
+                service.findAll_Oferente_hab().stream()
+                        .filter(h -> h.getOferente().getId().equals(oferenteId))
+                        .toList();
+
+        // URL de retorno: si venía desde un puesto, vuelve a Candidatos; si no, a Mis Puestos
+        String urlVolver = puestoId != null
+                ? "/empresa/candidatos?puestoId=" + puestoId
+                : "/empresa/puestos";
+
         model.addAttribute("oferente", oferente);
+        model.addAttribute("habilidades", habilidades);
+        model.addAttribute("tieneCv", oferente.getCurriculum() != null);
+        model.addAttribute("urlVolver", urlVolver);
         return "presentation/Empresa/DetalleOferente";
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    //  VER CV PDF DEL OFERENTE (desde la vista de detalle)
+    // ══════════════════════════════════════════════════════════════
+
+    @GetMapping("/empresa/candidatos/cv")
+    public ResponseEntity<byte[]> verCvOferente(
+            @RequestParam Integer oferenteId,
+            HttpSession session) {
+
+        if (!esEmpresa(session)) return ResponseEntity.status(302).build();
+
+        Oferente oferente = service.findAll_Oferentes().stream()
+                .filter(o -> o.getId().equals(oferenteId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Oferente no encontrado"));
+
+        if (oferente.getCurriculum() == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "inline; filename=\"cv_" + oferente.getNombre() + ".pdf\"")
+                .body(oferente.getCurriculum());
     }
 }
