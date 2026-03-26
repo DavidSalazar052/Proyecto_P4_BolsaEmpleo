@@ -1,10 +1,11 @@
 package BolsaEmpleo.presentation;
 
+import BolsaEmpleo.data.EmpresaRepository;
+import BolsaEmpleo.data.OferentesRepository;
 import BolsaEmpleo.logic.Base.Empresa;
 import BolsaEmpleo.logic.Base.Oferente;
 import BolsaEmpleo.logic.Base.Usuario;
 import BolsaEmpleo.logic.Service;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,20 +13,48 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/*
+ * ╔═══════════════════════════════════════════════════════════════╗
+ * ║  LoginController                                              ║
+ * ║                                                               ║
+ * ║  Con Spring Security el flujo cambia:                         ║
+ * ║  • GET  /login        → este controller muestra el formulario ║
+ * ║  • POST /login        → lo intercepta Spring Security,        ║
+ * ║                         NO llega a este controller            ║
+ * ║  • GET  /logout       → lo intercepta Spring Security         ║
+ * ║                                                               ║
+ * ║  Este controller solo maneja:                                 ║
+ * ║  • Mostrar las vistas de login / registro                     ║
+ * ║  • Procesar los formularios de registro (empresa y oferente)  ║
+ * ║  • Mostrar la pantalla de pendiente de aprobación             ║
+ * ╚═══════════════════════════════════════════════════════════════╝
+ */
 @Controller
 public class LoginController {
 
-    @Autowired
-    private Service service;
+    @Autowired private Service service;
+    @Autowired private EmpresaRepository  empresaRepo;
+    @Autowired private OferentesRepository oferenteRepo;
 
     // ══════════════════════════════════════════════════════
-    //  GET — Vistas de login y registro
+    //  GET — Formulario de login
+    //  Spring Security redirige aquí cuando un recurso
+    //  protegido es accedido sin autenticación.
     // ══════════════════════════════════════════════════════
 
     @GetMapping("/login")
-    public String mostrarLogin() {
+    public String mostrarLogin(
+            @RequestParam(required = false) String error,
+            Model model) {
+        if (error != null) {
+            model.addAttribute("error", "Usuario o contraseña incorrectos.");
+        }
         return "presentation/Login/viewLogin";
     }
+
+    // ══════════════════════════════════════════════════════
+    //  GET — Vistas de registro
+    // ══════════════════════════════════════════════════════
 
     @GetMapping("/login/empresa")
     public String mostrarRegistroEmpresa() {
@@ -38,62 +67,9 @@ public class LoginController {
     }
 
     // ══════════════════════════════════════════════════════
-    //  POST — Login: autentica, verifica aprobación y redirige
-    // ══════════════════════════════════════════════════════
-
-    @PostMapping("/login")
-    public String procesarLogin(
-            @RequestParam String username,
-            @RequestParam String clave,
-            HttpSession session,
-            Model model) {
-
-        // 1. Verificar credenciales
-        Usuario usuario = service.Usuario_Login(username, clave);
-        if (usuario == null) {
-            model.addAttribute("error", "Usuario o contraseña incorrectos.");
-            return "presentation/Login/viewLogin";
-        }
-
-        // 2. Guardar en sesión
-        session.setAttribute("usuarioLogueado", usuario);
-
-        // 3. Verificar aprobación según tipo y redirigir
-        switch (usuario.getTipo()) {
-
-            case "ADM":
-                // Los admins no requieren aprobación
-                return "redirect:/DashboardAdministrador";
-
-            case "EMP":
-                // Verificamos si la empresa fue aprobada por el admin
-                Empresa empresa = service.empresaByUsuario(usuario.getId());
-                if (!empresa.isAprobada()) {
-                    model.addAttribute("tipo", "EMP");
-                    return "presentation/Login/pendienteAprobacion";
-                }
-                return "redirect:/DashboardEmpresa";
-
-            case "OFE":
-                // Verificamos si el oferente fue aprobado por el admin
-                Oferente oferente = service.findAll_Oferentes().stream()
-                        .filter(o -> o.getId().equals(usuario.getId()))
-                        .findFirst()
-                        .orElse(null);
-                if (oferente == null || !oferente.isAprobado()) {
-                    model.addAttribute("tipo", "OFE");
-                    return "presentation/Login/pendienteAprobacion";
-                }
-                return "redirect:/DashboardOferente";
-
-            default:
-                model.addAttribute("error", "Tipo de usuario desconocido.");
-                return "presentation/Login/viewLogin";
-        }
-    }
-
-    // ══════════════════════════════════════════════════════
     //  POST — Registro Empresa
+    //  Crea usuario + empresa con aprobada=false.
+    //  Muestra pantalla de pendiente (no hace login automático).
     // ══════════════════════════════════════════════════════
 
     @PostMapping("/registro/empresa")
@@ -105,7 +81,6 @@ public class LoginController {
             @RequestParam String correo,
             @RequestParam String telefono,
             @RequestParam String descripcion,
-            HttpSession session,
             Model model) {
         try {
             Usuario nuevoUsuario = new Usuario();
@@ -124,8 +99,6 @@ public class LoginController {
 
             service.registrarEmpresa(nuevoUsuario, nuevaEmpresa);
 
-            // Recién registrado → queda pendiente de aprobación
-            session.setAttribute("usuarioLogueado", nuevoUsuario);
             model.addAttribute("tipo", "EMP");
             return "presentation/Login/pendienteAprobacion";
 
@@ -149,7 +122,6 @@ public class LoginController {
             @RequestParam String telefono,
             @RequestParam String correo,
             @RequestParam String residencia,
-            HttpSession session,
             Model model) {
         try {
             Usuario nuevoUsuario = new Usuario();
@@ -169,8 +141,6 @@ public class LoginController {
 
             service.registrarOferente(nuevoUsuario, nuevoOferente);
 
-            // Recién registrado → queda pendiente de aprobación
-            session.setAttribute("usuarioLogueado", nuevoUsuario);
             model.addAttribute("tipo", "OFE");
             return "presentation/Login/pendienteAprobacion";
 
@@ -178,15 +148,5 @@ public class LoginController {
             model.addAttribute("error", "Error al registrar: " + e.getMessage());
             return "presentation/Login/viewRegistroOferente";
         }
-    }
-
-    // ══════════════════════════════════════════════════════
-    //  GET — Cerrar sesión
-    // ══════════════════════════════════════════════════════
-
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/login";
     }
 }

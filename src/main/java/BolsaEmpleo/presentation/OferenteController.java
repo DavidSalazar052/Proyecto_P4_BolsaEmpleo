@@ -1,10 +1,10 @@
 package BolsaEmpleo.presentation;
 
+import BolsaEmpleo.data.UsuarioRepository;
 import BolsaEmpleo.logic.Base.Oferente;
 import BolsaEmpleo.logic.Base.Usuario;
 import BolsaEmpleo.logic.OferenteHabilidades;
 import BolsaEmpleo.logic.Service;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -15,65 +15,55 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
 public class OferenteController {
 
-    @Autowired
-    private Service service;
+    @Autowired private Service           service;
+    @Autowired private UsuarioRepository usuarioRepo;
 
-    // ──────────────────────────────────────────────
-    //  DASHBOARD
-    // ──────────────────────────────────────────────
+    private Oferente getOferente(Principal principal) {
+        Usuario u = usuarioRepo.findByUsernameOnly(principal.getName());
+        return service.oferenteByUsuario(u.getId());
+    }
+
+    // ── Dashboard ─────────────────────────────────────────────────
 
     @GetMapping("/DashboardOferente")
-    public String mostrar_DashboardOferente(HttpSession session, Model model) {
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
-        if (usuario == null || !"OFE".equals(usuario.getTipo())) {
-            return "redirect:/login";
+    public String mostrar_DashboardOferente(Principal principal, Model model) {
+        Oferente oferente = getOferente(principal);
+        // Verificar aprobación
+        if (!oferente.isAprobado()) {
+            model.addAttribute("tipo", "OFE");
+            return "presentation/Login/pendienteAprobacion";
         }
-        model.addAttribute("usuario", usuario);
+        model.addAttribute("usuario", usuarioRepo.findByUsernameOnly(principal.getName()));
         return "presentation/Oferente/DashboardOferente";
     }
 
-    // ──────────────────────────────────────────────
-    //  HABILIDADES DEL OFERENTE
-    // ──────────────────────────────────────────────
+    // ── Habilidades ───────────────────────────────────────────────
 
-    /** GET /oferente/habilidades — muestra lista y formulario */
     @GetMapping("/oferente/habilidades")
-    public String mostrarHabilidades(HttpSession session, Model model) {
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
-        if (usuario == null || !"OFE".equals(usuario.getTipo())) {
-            return "redirect:/login";
-        }
-
-        Oferente oferente = service.oferenteByUsuario(usuario.getId());
-        List<OferenteHabilidades> habilidades =
-                service.findAll_Oferente_hab().stream()
-                        .filter(h -> h.getOferente().getId().equals(oferente.getId()))
-                        .toList();
-
-        model.addAttribute("usuario", usuario);
+    public String mostrarHabilidades(Principal principal, Model model) {
+        Oferente oferente = getOferente(principal);
+        List<OferenteHabilidades> habilidades = service.findAll_Oferente_hab().stream()
+                .filter(h -> h.getOferente().getId().equals(oferente.getId())).toList();
+        model.addAttribute("usuario", usuarioRepo.findByUsernameOnly(principal.getName()));
         model.addAttribute("oferente", oferente);
         model.addAttribute("habilidades", habilidades);
         model.addAttribute("caracteristicas", service.findAll_Caracteristicas());
         return "presentation/Oferente/MisHabilidades";
     }
 
-    /** POST /oferente/habilidades — agrega una habilidad */
     @PostMapping("/oferente/habilidades")
-    public String agregarHabilidad(@RequestParam Integer caracteristicaId,
-                                   @RequestParam Integer nivel,
-                                   HttpSession session,
-                                   Model model) {
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
-        if (usuario == null || !"OFE".equals(usuario.getTipo())) {
-            return "redirect:/login";
-        }
+    public String agregarHabilidad(
+            @RequestParam Integer caracteristicaId,
+            @RequestParam Integer nivel,
+            Principal principal, Model model) {
         try {
-            Oferente oferente = service.oferenteByUsuario(usuario.getId());
+            Oferente oferente = getOferente(principal);
             service.agregarHabilidadOferente(oferente.getId(), caracteristicaId, nivel);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -81,73 +71,47 @@ public class OferenteController {
         return "redirect:/oferente/habilidades";
     }
 
-    /** POST /oferente/habilidades/eliminar — elimina una habilidad */
     @PostMapping("/oferente/habilidades/eliminar")
-    public String eliminarHabilidad(@RequestParam Integer habilidadId,
-                                    HttpSession session) {
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
-        if (usuario == null || !"OFE".equals(usuario.getTipo())) {
-            return "redirect:/login";
-        }
+    public String eliminarHabilidad(@RequestParam Integer habilidadId) {
         service.Oferente_hab_Delete(habilidadId);
         return "redirect:/oferente/habilidades";
     }
 
-    // ──────────────────────────────────────────────
-    //  CURRÍCULUM (PDF)
-    // ──────────────────────────────────────────────
+    // ── Currículum ────────────────────────────────────────────────
 
-    /** GET /oferente/curriculum — vista para subir CV */
     @GetMapping("/oferente/curriculum")
-    public String mostrarSubirCV(HttpSession session, Model model) {
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
-        if (usuario == null || !"OFE".equals(usuario.getTipo())) {
-            return "redirect:/login";
-        }
-        Oferente oferente = service.oferenteByUsuario(usuario.getId());
-        model.addAttribute("usuario", usuario);
+    public String mostrarSubirCV(Principal principal, Model model) {
+        Oferente oferente = getOferente(principal);
+        model.addAttribute("usuario", usuarioRepo.findByUsernameOnly(principal.getName()));
         model.addAttribute("tieneCv", oferente.getCurriculum() != null);
         return "presentation/Oferente/SubirCV";
     }
 
-    /** POST /oferente/curriculum — recibe y guarda el PDF */
     @PostMapping("/oferente/curriculum")
     public String subirCV(@RequestParam MultipartFile archivo,
-                          HttpSession session,
-                          Model model) {
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
-        if (usuario == null || !"OFE".equals(usuario.getTipo())) {
-            return "redirect:/login";
-        }
+                          Principal principal, Model model) {
         if (archivo.isEmpty()) {
-            model.addAttribute("usuario", usuario);
+            model.addAttribute("usuario", usuarioRepo.findByUsernameOnly(principal.getName()));
             model.addAttribute("error", "Por favor seleccioná un archivo PDF.");
             model.addAttribute("tieneCv", false);
             return "presentation/Oferente/SubirCV";
         }
         try {
-            Oferente oferente = service.oferenteByUsuario(usuario.getId());
+            Oferente oferente = getOferente(principal);
             oferente.setCurriculum(archivo.getBytes());
             service.OferentesAdd(oferente);
         } catch (IOException e) {
-            model.addAttribute("usuario", usuario);
+            model.addAttribute("usuario", usuarioRepo.findByUsernameOnly(principal.getName()));
             model.addAttribute("error", "Error al leer el archivo: " + e.getMessage());
             return "presentation/Oferente/SubirCV";
         }
         return "redirect:/oferente/curriculum?ok";
     }
 
-    /** GET /oferente/curriculum/ver — descarga/visualiza el propio CV */
     @GetMapping("/oferente/curriculum/ver")
-    public ResponseEntity<byte[]> verMiCV(HttpSession session) {
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
-        if (usuario == null || !"OFE".equals(usuario.getTipo())) {
-            return ResponseEntity.status(302).build();
-        }
-        Oferente oferente = service.oferenteByUsuario(usuario.getId());
-        if (oferente.getCurriculum() == null) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<byte[]> verMiCV(Principal principal) {
+        Oferente oferente = getOferente(principal);
+        if (oferente.getCurriculum() == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_PDF)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"curriculum.pdf\"")

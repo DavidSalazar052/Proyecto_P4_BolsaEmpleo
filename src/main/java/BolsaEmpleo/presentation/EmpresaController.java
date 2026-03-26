@@ -2,12 +2,11 @@ package BolsaEmpleo.presentation;
 
 import BolsaEmpleo.logic.Base.Empresa;
 import BolsaEmpleo.logic.Base.Oferente;
-import BolsaEmpleo.logic.Base.Caracteristicas;
 import BolsaEmpleo.logic.Base.Usuario;
 import BolsaEmpleo.logic.OferenteHabilidades;
 import BolsaEmpleo.logic.Puesto;
 import BolsaEmpleo.logic.Service;
-import jakarta.servlet.http.HttpSession;
+import BolsaEmpleo.data.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -16,47 +15,48 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
+/*
+ * Las rutas /DashboardEmpresa y /empresa/** ya están protegidas
+ * con hasRole("EMP") en SecurityConfig → Spring Security rechaza
+ * cualquier acceso sin ese rol antes de llegar aquí.
+ *
+ * Principal es inyectado por Spring Security y contiene el username
+ * del usuario autenticado → lo usamos para cargar la Empresa.
+ */
 @Controller
 public class EmpresaController {
 
-    @Autowired
-    private Service service;
+    @Autowired private Service           service;
+    @Autowired private UsuarioRepository usuarioRepo;
 
-    // ── Auxiliar de sesión ────────────────────────────────────────
-
-    private boolean esEmpresa(HttpSession session) {
-        Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
-        return u != null && "EMP".equals(u.getTipo());
-    }
-
-    /** Obtiene la Empresa del usuario en sesión. */
-    private Empresa getEmpresaSesion(HttpSession session) {
-        Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
+    /** Obtiene la Empresa a partir del username en el Principal. */
+    private Empresa getEmpresa(Principal principal) {
+        Usuario u = usuarioRepo.findByUsernameOnly(principal.getName());
         return service.empresaByUsuario(u.getId());
     }
 
-    // ══════════════════════════════════════════════════════════════
-    //  DASHBOARD EMPRESA
-    // ══════════════════════════════════════════════════════════════
+    // ── Dashboard ─────────────────────────────────────────────────
 
     @GetMapping("/DashboardEmpresa")
-    public String mostrar_DashboardEmpresa(HttpSession session, Model model) {
-        if (!esEmpresa(session)) return "redirect:/login";
-        Empresa empresa = getEmpresaSesion(session);
+    public String mostrar_DashboardEmpresa(Principal principal, Model model) {
+        // Verificar aprobación
+        Empresa empresa = getEmpresa(principal);
+        if (!empresa.isAprobada()) {
+            model.addAttribute("tipo", "EMP");
+            return "presentation/Login/pendienteAprobacion";
+        }
         model.addAttribute("empresa", empresa);
         return "presentation/Empresa/DashboardEmpresa";
     }
 
-    // ══════════════════════════════════════════════════════════════
-    //  EDITAR DATOS DE LA EMPRESA
-    // ══════════════════════════════════════════════════════════════
+    // ── Editar empresa ────────────────────────────────────────────
 
     @GetMapping("/empresa/editar")
-    public String mostrar_EditarEmpresa(HttpSession session, Model model) {
-        if (!esEmpresa(session)) return "redirect:/login";
-        model.addAttribute("empresa", getEmpresaSesion(session));
+    public String mostrar_EditarEmpresa(Principal principal, Model model) {
+        model.addAttribute("empresa", getEmpresa(principal));
         return "presentation/Empresa/EditarEmpresa";
     }
 
@@ -67,46 +67,35 @@ public class EmpresaController {
             @RequestParam String correo,
             @RequestParam String telefono,
             @RequestParam String descripcion,
-            HttpSession session, Model model) {
-
-        if (!esEmpresa(session)) return "redirect:/login";
+            Principal principal, Model model) {
         try {
-            Empresa empresa = getEmpresaSesion(session);
-            empresa.setNombre(nombre);
-            empresa.setLocalizacion(localizacion);
-            empresa.setCorreo(correo);
-            empresa.setTelefono(telefono);
+            Empresa empresa = getEmpresa(principal);
+            empresa.setNombre(nombre); empresa.setLocalizacion(localizacion);
+            empresa.setCorreo(correo); empresa.setTelefono(telefono);
             empresa.setDescripcion(descripcion);
             service.empresaUpdate(empresa);
             return "redirect:/DashboardEmpresa?exito=true";
         } catch (Exception e) {
             model.addAttribute("error", "Error al guardar: " + e.getMessage());
-            model.addAttribute("empresa", getEmpresaSesion(session));
+            model.addAttribute("empresa", getEmpresa(principal));
             return "presentation/Empresa/EditarEmpresa";
         }
     }
 
-    // ══════════════════════════════════════════════════════════════
-    //  MIS PUESTOS
-    // ══════════════════════════════════════════════════════════════
+    // ── Mis puestos ───────────────────────────────────────────────
 
     @GetMapping("/empresa/puestos")
-    public String mostrar_MisPuestos(HttpSession session, Model model) {
-        if (!esEmpresa(session)) return "redirect:/login";
-        Empresa empresa = getEmpresaSesion(session);
-        List<Puesto> puestos = service.puestosByEmpresa(empresa.getId());
+    public String mostrar_MisPuestos(Principal principal, Model model) {
+        Empresa empresa = getEmpresa(principal);
         model.addAttribute("empresa", empresa);
-        model.addAttribute("puestos", puestos);
+        model.addAttribute("puestos", service.puestosByEmpresa(empresa.getId()));
         return "presentation/Empresa/MisPuestos";
     }
 
-    // ══════════════════════════════════════════════════════════════
-    //  CREAR PUESTO — formulario
-    // ══════════════════════════════════════════════════════════════
+    // ── Nuevo puesto ──────────────────────────────────────────────
 
     @GetMapping("/empresa/puestos/nuevo")
-    public String mostrar_NuevoPuesto(HttpSession session, Model model) {
-        if (!esEmpresa(session)) return "redirect:/login";
+    public String mostrar_NuevoPuesto(Model model) {
         model.addAttribute("caracteristicas", service.findAll_Caracteristicas());
         return "presentation/Empresa/NuevoPuesto";
     }
@@ -116,12 +105,9 @@ public class EmpresaController {
             @RequestParam String descripcion,
             @RequestParam Integer salario,
             @RequestParam String tipo,
-            HttpSession session, Model model) {
-
-        if (!esEmpresa(session)) return "redirect:/login";
+            Principal principal, Model model) {
         try {
-            Empresa empresa = getEmpresaSesion(session);
-            service.crearPuesto(empresa, descripcion, salario, tipo);
+            service.crearPuesto(getEmpresa(principal), descripcion, salario, tipo);
             return "redirect:/empresa/puestos?exito=true";
         } catch (Exception e) {
             model.addAttribute("error", "Error al crear el puesto: " + e.getMessage());
@@ -130,128 +116,72 @@ public class EmpresaController {
         }
     }
 
-    // ══════════════════════════════════════════════════════════════
-    //  AGREGAR CARACTERÍSTICA A UN PUESTO
-    // ══════════════════════════════════════════════════════════════
+    // ── Habilidades de un puesto ──────────────────────────────────
 
     @PostMapping("/empresa/puestos/habilidad")
     public String agregar_HabilidadPuesto(
             @RequestParam Integer puestoId,
             @RequestParam Integer caracteristicaId,
-            @RequestParam Integer nivel,
-            HttpSession session) {
-
-        if (!esEmpresa(session)) return "redirect:/login";
+            @RequestParam Integer nivel) {
         service.agregarHabilidadPuesto(puestoId, caracteristicaId, nivel);
         return "redirect:/empresa/puestos/" + puestoId;
     }
 
-    // ══════════════════════════════════════════════════════════════
-    //  VER DETALLE DE UN PUESTO (habilidades requeridas)
-    // ══════════════════════════════════════════════════════════════
-
     @GetMapping("/empresa/puestos/{id}")
-    public String mostrar_DetallePuesto(
-            @PathVariable Integer id,
-            HttpSession session, Model model) {
-
-        if (!esEmpresa(session)) return "redirect:/login";
-        Puesto puesto = service.PuestoRead(id);
-        model.addAttribute("puesto", puesto);
+    public String mostrar_DetallePuesto(@PathVariable Integer id, Model model) {
+        model.addAttribute("puesto", service.PuestoRead(id));
         model.addAttribute("habilidades", service.habilidadesByPuesto(id));
         model.addAttribute("caracteristicas", service.findAll_Caracteristicas());
         return "presentation/Empresa/DetallePuesto";
     }
 
-    // ══════════════════════════════════════════════════════════════
-    //  DESACTIVAR PUESTO
-    // ══════════════════════════════════════════════════════════════
+    // ── Desactivar puesto ─────────────────────────────────────────
 
     @PostMapping("/empresa/puestos/desactivar")
-    public String desactivar_Puesto(
-            @RequestParam Integer puestoId,
-            HttpSession session) {
-
-        if (!esEmpresa(session)) return "redirect:/login";
+    public String desactivar_Puesto(@RequestParam Integer puestoId) {
         service.desactivarPuesto(puestoId);
         return "redirect:/empresa/puestos";
     }
 
-    // ══════════════════════════════════════════════════════════════
-    //  BUSCAR CANDIDATOS PARA UN PUESTO
-    // ══════════════════════════════════════════════════════════════
+    // ── Candidatos ────────────────────────────────────────────────
 
     @GetMapping("/empresa/candidatos")
-    public String mostrar_Candidatos(
-            @RequestParam Integer puestoId,
-            HttpSession session, Model model) {
-
-        if (!esEmpresa(session)) return "redirect:/login";
-        Puesto puesto = service.PuestoRead(puestoId);
-        List<Service.ResultadoCandidato> candidatos = service.calcularCandidatos(puestoId);
-        model.addAttribute("puesto", puesto);
-        model.addAttribute("candidatos", candidatos);
+    public String mostrar_Candidatos(@RequestParam Integer puestoId, Model model) {
+        model.addAttribute("puesto", service.PuestoRead(puestoId));
+        model.addAttribute("candidatos", service.calcularCandidatos(puestoId));
         return "presentation/Empresa/Candidatos";
     }
-
-    // ══════════════════════════════════════════════════════════════
-    //  VER DETALLE DE UN OFERENTE (incluye habilidades + estado CV)
-    // ══════════════════════════════════════════════════════════════
 
     @GetMapping("/empresa/candidatos/detalle")
     public String mostrar_DetalleOferente(
             @RequestParam Integer oferenteId,
             @RequestParam(required = false) Integer puestoId,
-            HttpSession session, Model model) {
-
-        if (!esEmpresa(session)) return "redirect:/login";
+            Model model) {
 
         Oferente oferente = service.findAll_Oferentes().stream()
-                .filter(o -> o.getId().equals(oferenteId))
-                .findFirst()
+                .filter(o -> o.getId().equals(oferenteId)).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Oferente no encontrado"));
 
-        List<OferenteHabilidades> habilidades =
-                service.findAll_Oferente_hab().stream()
-                        .filter(h -> h.getOferente().getId().equals(oferenteId))
-                        .toList();
-
-        // URL de retorno: si venía desde un puesto, vuelve a Candidatos; si no, a Mis Puestos
-        String urlVolver = puestoId != null
-                ? "/empresa/candidatos?puestoId=" + puestoId
-                : "/empresa/puestos";
+        List<OferenteHabilidades> habilidades = service.findAll_Oferente_hab().stream()
+                .filter(h -> h.getOferente().getId().equals(oferenteId)).toList();
 
         model.addAttribute("oferente", oferente);
         model.addAttribute("habilidades", habilidades);
         model.addAttribute("tieneCv", oferente.getCurriculum() != null);
-        model.addAttribute("urlVolver", urlVolver);
+        model.addAttribute("urlVolver", puestoId != null
+                ? "/empresa/candidatos?puestoId=" + puestoId : "/empresa/puestos");
         return "presentation/Empresa/DetalleOferente";
     }
 
-    // ══════════════════════════════════════════════════════════════
-    //  VER CV PDF DEL OFERENTE (desde la vista de detalle)
-    // ══════════════════════════════════════════════════════════════
-
     @GetMapping("/empresa/candidatos/cv")
-    public ResponseEntity<byte[]> verCvOferente(
-            @RequestParam Integer oferenteId,
-            HttpSession session) {
-
-        if (!esEmpresa(session)) return ResponseEntity.status(302).build();
-
+    public ResponseEntity<byte[]> verCvOferente(@RequestParam Integer oferenteId) {
         Oferente oferente = service.findAll_Oferentes().stream()
-                .filter(o -> o.getId().equals(oferenteId))
-                .findFirst()
+                .filter(o -> o.getId().equals(oferenteId)).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Oferente no encontrado"));
-
-        if (oferente.getCurriculum() == null) {
-            return ResponseEntity.notFound().build();
-        }
-
+        if (oferente.getCurriculum() == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_PDF)
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "inline; filename=\"cv_" + oferente.getNombre() + ".pdf\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"cv_" + oferente.getNombre() + ".pdf\"")
                 .body(oferente.getCurriculum());
     }
 }
