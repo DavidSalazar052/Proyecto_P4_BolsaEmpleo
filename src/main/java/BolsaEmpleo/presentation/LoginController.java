@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.UUID;
-
 @Controller
 public class LoginController {
 
@@ -40,7 +38,7 @@ public class LoginController {
     }
 
     // ══════════════════════════════════════════════════════
-    //  POST — Login: autentica y redirige al dashboard según tipo
+    //  POST — Login: autentica, verifica aprobación y redirige
     // ══════════════════════════════════════════════════════
 
     @PostMapping("/login")
@@ -50,32 +48,52 @@ public class LoginController {
             HttpSession session,
             Model model) {
 
+        // 1. Verificar credenciales
         Usuario usuario = service.Usuario_Login(username, clave);
-
         if (usuario == null) {
             model.addAttribute("error", "Usuario o contraseña incorrectos.");
             return "presentation/Login/viewLogin";
         }
 
-        // Guardamos el usuario en sesión para usarlo en los dashboards
+        // 2. Guardar en sesión
         session.setAttribute("usuarioLogueado", usuario);
 
-        // Redirigimos según el tipo de usuario
+        // 3. Verificar aprobación según tipo y redirigir
         switch (usuario.getTipo()) {
+
             case "ADM":
+                // Los admins no requieren aprobación
                 return "redirect:/DashboardAdministrador";
+
             case "EMP":
+                // Verificamos si la empresa fue aprobada por el admin
+                Empresa empresa = service.empresaByUsuario(usuario.getId());
+                if (!empresa.isAprobada()) {
+                    model.addAttribute("tipo", "EMP");
+                    return "presentation/Login/pendienteAprobacion";
+                }
                 return "redirect:/DashboardEmpresa";
+
             case "OFE":
+                // Verificamos si el oferente fue aprobado por el admin
+                Oferente oferente = service.findAll_Oferentes().stream()
+                        .filter(o -> o.getId().equals(usuario.getId()))
+                        .findFirst()
+                        .orElse(null);
+                if (oferente == null || !oferente.isAprobado()) {
+                    model.addAttribute("tipo", "OFE");
+                    return "presentation/Login/pendienteAprobacion";
+                }
                 return "redirect:/DashboardOferente";
+
             default:
-                model.addAttribute("error", "Tipo de usuario desconocido: " + usuario.getTipo());
+                model.addAttribute("error", "Tipo de usuario desconocido.");
                 return "presentation/Login/viewLogin";
         }
     }
 
     // ══════════════════════════════════════════════════════
-    //  POST — Registro Empresa → redirige al dashboard empresa
+    //  POST — Registro Empresa
     // ══════════════════════════════════════════════════════
 
     @PostMapping("/registro/empresa")
@@ -106,9 +124,10 @@ public class LoginController {
 
             service.registrarEmpresa(nuevoUsuario, nuevaEmpresa);
 
-            // Guardamos en sesión y redirigimos al dashboard
+            // Recién registrado → queda pendiente de aprobación
             session.setAttribute("usuarioLogueado", nuevoUsuario);
-            return "redirect:/DashboardEmpresa";
+            model.addAttribute("tipo", "EMP");
+            return "presentation/Login/pendienteAprobacion";
 
         } catch (Exception e) {
             model.addAttribute("error", "Error al registrar: " + e.getMessage());
@@ -117,7 +136,7 @@ public class LoginController {
     }
 
     // ══════════════════════════════════════════════════════
-    //  POST — Registro Oferente → redirige al dashboard oferente
+    //  POST — Registro Oferente
     // ══════════════════════════════════════════════════════
 
     @PostMapping("/registro/oferente")
@@ -132,7 +151,6 @@ public class LoginController {
             @RequestParam String residencia,
             HttpSession session,
             Model model) {
-
         try {
             Usuario nuevoUsuario = new Usuario();
             nuevoUsuario.setUsername(username);
@@ -151,9 +169,10 @@ public class LoginController {
 
             service.registrarOferente(nuevoUsuario, nuevoOferente);
 
-            // Guardamos en sesión y redirigimos al dashboard
+            // Recién registrado → queda pendiente de aprobación
             session.setAttribute("usuarioLogueado", nuevoUsuario);
-            return "redirect:/DashboardOferente";
+            model.addAttribute("tipo", "OFE");
+            return "presentation/Login/pendienteAprobacion";
 
         } catch (Exception e) {
             model.addAttribute("error", "Error al registrar: " + e.getMessage());
