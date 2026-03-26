@@ -14,15 +14,14 @@ import lombok.Setter;
 @AllArgsConstructor
 
 public class Oferente {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @OneToOne
-    @MapsId
-    @JoinColumn(name ="usuario_id")  // ← nombre explícito de la FK
+    @JoinColumn(name ="usuario_id")
     private Usuario usuario;
-
 
 
     private String nombre;

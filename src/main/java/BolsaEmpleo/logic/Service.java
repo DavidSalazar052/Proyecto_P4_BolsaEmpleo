@@ -465,6 +465,33 @@ public class Service {
     }
 
 
+    // ══════════════════════════════════════════════════════
+//  REPORTES — puestos por mes/año
+// ══════════════════════════════════════════════════════
+
+    /**
+     * Devuelve todos los puestos cuya fecha comience con "yyyy-MM".
+     * La fecha se guarda como String con formato LocalDate.toString() → "yyyy-MM-dd"
+     */
+    public List<Puesto> puestosPorMes(int anio, int mes) {
+        String prefijo = String.format("%04d-%02d", anio, mes);
+        return Puesto_Repo.findAll().stream()
+                .filter(p -> p.getFecha() != null && p.getFecha().startsWith(prefijo))
+                .toList();
+    }
+
+    /**
+     * Años disponibles en la tabla puesto (para poblar el select del formulario).
+     */
+    public java.util.List<Integer> aniosDisponibles() {
+        return Puesto_Repo.findAll().stream()
+                .map(Puesto::getFecha)
+                .filter(f -> f != null && f.length() >= 4)
+                .map(f -> Integer.parseInt(f.substring(0, 4)))
+                .distinct()
+                .sorted()
+                .toList();
+    }
 
 
 }
