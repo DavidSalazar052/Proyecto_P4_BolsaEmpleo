@@ -30,38 +30,6 @@
         <a th:href="@{/oferente/habilidades}" class="btn btn-primary">Mis habilidades</a>
         <a th:href="@{/oferente/curriculum}"  class="btn btn-outline-primary">Mi CV</a>
     </div>
-
-    <!-- ── Puestos disponibles ── -->
-    <h4 class="fw-bold mt-5">Puestos disponibles</h4>
-
-    <p th:if="${puestos == null or #lists.isEmpty(puestos)}" class="text-muted">
-        No hay puestos activos por el momento.
-    </p>
-
-    <table class="table table-sm table-bordered align-middle mt-3"
-           th:if="${puestos != null and not #lists.isEmpty(puestos)}">
-        <thead class="table-dark">
-        <tr>
-            <th>Descripción</th>
-            <th>Empresa</th>
-            <th>Tipo</th>
-            <th class="text-center">Salario</th>
-            <th>Fecha</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="p : ${puestos}">
-            <td th:text="${p.descripcion}"></td>
-            <td th:text="${p.empresa.nombre}"></td>
-            <td>
-                <span th:if="${p.tipo == 'PUBLICO'}"  class="badge bg-success">Público</span>
-                <span th:if="${p.tipo == 'PRIVADO'}" class="badge bg-secondary">Privado</span>
-            </td>
-            <td class="text-center" th:text="'₡' + ${p.salario}"></td>
-            <td th:text="${p.fecha}"></td>
-        </tr>
-        </tbody>
-    </table>
 </div>
 
 <footer th:replace="~{presentation/fragmentPublic :: footer}"></footer>

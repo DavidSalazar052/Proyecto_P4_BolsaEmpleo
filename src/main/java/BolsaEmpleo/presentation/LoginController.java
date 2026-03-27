@@ -7,7 +7,7 @@ import BolsaEmpleo.logic.Base.Oferente;
 import BolsaEmpleo.logic.Base.Usuario;
 import BolsaEmpleo.logic.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder; // ← NUEVO
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +20,7 @@ public class LoginController {
     @Autowired private Service service;
     @Autowired private EmpresaRepository  empresaRepo;
     @Autowired private OferentesRepository oferenteRepo;
-    @Autowired private PasswordEncoder passwordEncoder; // ← NUEVO
+    @Autowired private PasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
     public String mostrarLogin(
@@ -53,9 +53,15 @@ public class LoginController {
             @RequestParam String descripcion,
             Model model) {
         try {
+            // ← VALIDACIÓN: no permite espacios en blanco
+            if (username.trim().isEmpty() || clave.trim().isEmpty()) {
+                model.addAttribute("error", "El usuario y la contraseña no pueden estar en blanco o contener solo espacios.");
+                return "presentation/Login/viewRegistroEmpresa";
+            }
+
             Usuario nuevoUsuario = new Usuario();
             nuevoUsuario.setUsername(username);
-            nuevoUsuario.setClave(passwordEncoder.encode(clave)); // ← CAMBIO
+            nuevoUsuario.setClave(passwordEncoder.encode(clave));
             nuevoUsuario.setTipo("EMP");
 
             Empresa nuevaEmpresa = new Empresa();
@@ -90,9 +96,15 @@ public class LoginController {
             @RequestParam String residencia,
             Model model) {
         try {
+            // ← VALIDACIÓN: no permite espacios en blanco
+            if (username.trim().isEmpty() || clave.trim().isEmpty()) {
+                model.addAttribute("error", "El usuario y la contraseña no pueden estar en blanco o contener solo espacios.");
+                return "presentation/Login/viewRegistroOferente";
+            }
+
             Usuario nuevoUsuario = new Usuario();
             nuevoUsuario.setUsername(username);
-            nuevoUsuario.setClave(passwordEncoder.encode(clave)); // ← CAMBIO
+            nuevoUsuario.setClave(passwordEncoder.encode(clave));
             nuevoUsuario.setTipo("OFE");
 
             Oferente nuevoOferente = new Oferente();
