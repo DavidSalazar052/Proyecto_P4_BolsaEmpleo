@@ -34,12 +34,13 @@ public class OferenteController {
     @GetMapping("/DashboardOferente")
     public String mostrar_DashboardOferente(Principal principal, Model model) {
         Oferente oferente = getOferente(principal);
-        // Verificar aprobación
         if (!oferente.isAprobado()) {
             model.addAttribute("tipo", "OFE");
             return "presentation/Login/pendienteAprobacion";
         }
         model.addAttribute("usuario", usuarioRepo.findByUsernameOnly(principal.getName()));
+        model.addAttribute("puestos", service.findAll_puesto_emp().stream()   // ← NUEVO
+                .filter(p -> "ACTIVO".equals(p.getEstado())).toList());
         return "presentation/Oferente/DashboardOferente";
     }
 

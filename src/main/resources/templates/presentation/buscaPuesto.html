@@ -3,22 +3,6 @@
 <head th:replace="~{presentation/fragmentPublic :: head}"></head>
 <body>
 
-<!--
-    ╔══════════════════════════════════════════════════════════════╗
-    ║  VISTA: Buscar Puestos por Características                   ║
-    ║  Ruta GET:  /buscaPuesto              (carga la página)      ║
-    ║  Ruta GET:  /buscaPuesto?ids=1&ids=3  (resultado búsqueda)   ║
-    ║                                                              ║
-    ║  El controlador inyecta al model:                            ║
-    ║    - padres     → List<Caracteristicas> sin padre            ║
-    ║    - hijos      → Map<Integer, List<Caracteristicas>>        ║
-    ║                   (clave = id del padre)                     ║
-    ║    - puestos    → List<Puesto> resultado de la búsqueda      ║
-    ║                   (null si aún no se buscó)                  ║
-    ╚══════════════════════════════════════════════════════════════╝
--->
-
-<!-- NAVBAR igual que el resto de vistas públicas -->
 <section class="Inicio">
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container">
@@ -36,31 +20,16 @@
     </nav>
 </section>
 
-
-<!-- ══════════════════════════════════════════════════════
-     PANEL DE FILTROS CON CHECKBOXES DINÁMICOS
-     ══════════════════════════════════════════════════════ -->
 <div class="contenedor-filtros">
     <h4>Buscar puestos por características</h4>
 
-    <!--
-        FORMULARIO — method GET para que los ids queden en la URL.
-        Todos los checkboxes usan name="ids" (Integer).
-        El controlador recibe: @RequestParam List<Integer> ids
-    -->
     <form th:action="@{/buscaPuesto}" method="get">
-
         <div class="seccion-scroll">
 
-            <!--
-                ITERAMOS LOS PADRES que vienen del model (padres = findPadres()).
-                Por cada padre preguntamos si tiene hijos usando el Map hijos.
-                Si hijos[padre.id] no está vacío → mostramos el bloque sub-opciones.
-            -->
             <div class="grupo-categoria"
                  th:each="padre : ${padres}">
 
-                <!-- Fila del padre -->
+                <!-- Nivel 1: padre (raíz) -->
                 <div class="categoria-padre">
                     <input type="checkbox"
                            th:id="'car-' + ${padre.id}"
@@ -71,28 +40,38 @@
                     </label>
                 </div>
 
-                <!--
-                    Sub-opciones: solo se renderizan si hay hijos para este padre.
-                    hijos es un Map<Integer, List<Caracteristicas>> construido en el controller.
-                    Usamos hijos[padre.id] para acceder a la lista de hijos de cada padre.
-                -->
+                <!-- Nivel 2: hijos del padre -->
                 <div class="sub-opciones"
                      th:if="${hijos[padre.id] != null and not #lists.isEmpty(hijos[padre.id])}">
-                    <div class="item"
-                         th:each="hijo : ${hijos[padre.id]}">
-                        <input type="checkbox"
-                               th:id="'car-' + ${hijo.id}"
-                               name="ids"
-                               th:value="${hijo.id}">
-                        <label th:for="'car-' + ${hijo.id}"
-                               th:text="${hijo.nombre}">
-                        </label>
+                    <div th:each="hijo : ${hijos[padre.id]}">
+                        <div class="item">
+                            <input type="checkbox"
+                                   th:id="'car-' + ${hijo.id}"
+                                   name="ids"
+                                   th:value="${hijo.id}">
+                            <label th:for="'car-' + ${hijo.id}"
+                                   th:text="${hijo.nombre}">
+                            </label>
+                        </div>
+                        <!-- Nivel 3: nietos (hijos del hijo) -->
+                        <div class="sub-opciones ms-3"
+                             th:if="${hijos[hijo.id] != null and not #lists.isEmpty(hijos[hijo.id])}">
+                            <div class="item"
+                                 th:each="nieto : ${hijos[hijo.id]}">
+                                <input type="checkbox"
+                                       th:id="'car-' + ${nieto.id}"
+                                       name="ids"
+                                       th:value="${nieto.id}">
+                                <label th:for="'car-' + ${nieto.id}"
+                                       th:text="${nieto.nombre}">
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
             </div><!-- /grupo-categoria -->
 
-            <!-- Si no hay ninguna característica en la BD -->
             <p th:if="${padres == null or #lists.isEmpty(padres)}"
                class="text-muted small">
                 No hay características registradas aún.
@@ -104,68 +83,38 @@
             <button type="submit" class="btn-azul">Buscar</button>
             <button type="reset"  class="btn-blanco">Limpiar</button>
         </div>
-
     </form>
 </div>
 
-
-<!-- ══════════════════════════════════════════════════════
-     RESULTADOS DE LA BÚSQUEDA
-     puestos == null  → todavía no se hizo ninguna búsqueda
-     puestos vacío    → se buscó pero no hubo coincidencias
-     puestos con datos → mostramos las tarjetas
-     ══════════════════════════════════════════════════════ -->
 <div class="MostrarPuestos">
 
-    <!-- No se ha buscado todavía (primera carga de la página) -->
     <p th:if="${puestos == null}"
        style="text-align:center; padding: 2rem; color: #666;">
         Seleccioná una o más características y presioná <strong>Buscar</strong>.
     </p>
 
-    <!-- Se buscó pero no hay puestos que coincidan -->
     <p th:if="${puestos != null and #lists.isEmpty(puestos)}"
        style="text-align:center; padding: 2rem; color: #666;">
         No se encontraron puestos con las características seleccionadas.
     </p>
 
-    <!-- Grid de tarjetas con los puestos encontrados -->
     <div class="grid-puestos"
          th:if="${puestos != null and not #lists.isEmpty(puestos)}">
-
-        <!--
-            Iteramos la lista de Puesto.
-            p.empresa puede ser null si el puesto no tiene empresa asignada,
-            por eso usamos el operador ?: para mostrar un fallback.
-        -->
         <div class="card-puesto" th:each="p : ${puestos}">
-
-            <!-- Nombre de la empresa -->
             <h3 style="font-weight:bold;"
                 th:text="${p.empresa != null ? p.empresa.nombre : 'Empresa'}">
             </h3>
-
-            <!-- Descripción del puesto -->
             <p class="titulo" th:text="${p.descripcion}"></p>
-
-            <!-- Salario -->
             <p class="salario" th:text="'₡ ' + ${p.salario}"></p>
-
-            <!-- Overlay de detalle al hacer hover (mismo patrón que viewpublic.html) -->
             <div class="detalle">
-                <p><strong>Tipo:</strong>
-                    <span th:text="${p.tipo}"></span></p>
-                <p><strong>Estado:</strong>
-                    <span th:text="${p.estado}"></span></p>
-                <p><strong>Fecha:</strong>
-                    <span th:text="${p.fecha}"></span></p>
+                <p><strong>Tipo:</strong> <span th:text="${p.tipo}"></span></p>
+                <p><strong>Estado:</strong> <span th:text="${p.estado}"></span></p>
+                <p><strong>Fecha:</strong> <span th:text="${p.fecha}"></span></p>
             </div>
+        </div>
+    </div>
 
-        </div><!-- /card-puesto -->
-    </div><!-- /grid-puestos -->
-
-</div><!-- /MostrarPuestos -->
-
+</div>
 
 <footer th:replace="~{presentation/fragmentPublic :: footer}"></footer>
 </body>
