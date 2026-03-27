@@ -18,21 +18,12 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
-/*
- * Las rutas /DashboardEmpresa y /empresa/** ya están protegidas
- * con hasRole("EMP") en SecurityConfig → Spring Security rechaza
- * cualquier acceso sin ese rol antes de llegar aquí.
- *
- * Principal es inyectado por Spring Security y contiene el username
- * del usuario autenticado → lo usamos para cargar la Empresa.
- */
 @Controller
 public class EmpresaController {
 
     @Autowired private Service           service;
     @Autowired private UsuarioRepository usuarioRepo;
 
-    /** Obtiene la Empresa a partir del username en el Principal. */
     private Empresa getEmpresa(Principal principal) {
         Usuario u = usuarioRepo.findByUsernameOnly(principal.getName());
         return service.empresaByUsuario(u.getId());
@@ -42,7 +33,6 @@ public class EmpresaController {
 
     @GetMapping("/DashboardEmpresa")
     public String mostrar_DashboardEmpresa(Principal principal, Model model) {
-        // Verificar aprobación
         Empresa empresa = getEmpresa(principal);
         if (!empresa.isAprobada()) {
             model.addAttribute("tipo", "EMP");
@@ -124,6 +114,14 @@ public class EmpresaController {
             @RequestParam Integer caracteristicaId,
             @RequestParam Integer nivel) {
         service.agregarHabilidadPuesto(puestoId, caracteristicaId, nivel);
+        return "redirect:/empresa/puestos/" + puestoId;
+    }
+
+    @PostMapping("/empresa/puestos/habilidad/eliminar")  // ← NUEVO
+    public String eliminar_HabilidadPuesto(
+            @RequestParam Integer habilidadId,
+            @RequestParam Integer puestoId) {
+        service.Puesto_hab_delete(habilidadId);
         return "redirect:/empresa/puestos/" + puestoId;
     }
 

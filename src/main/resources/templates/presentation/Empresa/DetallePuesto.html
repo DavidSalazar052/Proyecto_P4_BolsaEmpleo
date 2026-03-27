@@ -36,16 +36,24 @@
             <table class="table table-sm table-bordered"
                    th:if="${habilidades != null and not #lists.isEmpty(habilidades)}">
                 <thead class="table-dark">
-                    <tr>
-                        <th>Característica</th>
-                        <th>Nivel requerido</th>
-                    </tr>
+                <tr>
+                    <th>Característica</th>
+                    <th>Nivel requerido</th>
+                    <th class="text-center">Acción</th>  <!-- ← NUEVO -->
+                </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="h : ${habilidades}">
-                        <td th:text="${h.habilidad.nombre}"></td>
-                        <td th:text="${h.nivel}"></td>
-                    </tr>
+                <tr th:each="h : ${habilidades}">
+                    <td th:text="${h.habilidad.nombre}"></td>
+                    <td th:text="${h.nivel}"></td>
+                    <td class="text-center">             <!-- ← NUEVO -->
+                        <form method="POST" th:action="@{/empresa/puestos/habilidad/eliminar}">
+                            <input type="hidden" name="habilidadId" th:value="${h.id}">
+                            <input type="hidden" name="puestoId"    th:value="${puesto.id}">
+                            <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
