@@ -7,40 +7,20 @@ import BolsaEmpleo.logic.Base.Oferente;
 import BolsaEmpleo.logic.Base.Usuario;
 import BolsaEmpleo.logic.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder; // ← NUEVO
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-/*
- * ╔═══════════════════════════════════════════════════════════════╗
- * ║  LoginController                                              ║
- * ║                                                               ║
- * ║  Con Spring Security el flujo cambia:                         ║
- * ║  • GET  /login        → este controller muestra el formulario ║
- * ║  • POST /login        → lo intercepta Spring Security,        ║
- * ║                         NO llega a este controller            ║
- * ║  • GET  /logout       → lo intercepta Spring Security         ║
- * ║                                                               ║
- * ║  Este controller solo maneja:                                 ║
- * ║  • Mostrar las vistas de login / registro                     ║
- * ║  • Procesar los formularios de registro (empresa y oferente)  ║
- * ║  • Mostrar la pantalla de pendiente de aprobación             ║
- * ╚═══════════════════════════════════════════════════════════════╝
- */
 @Controller
 public class LoginController {
 
     @Autowired private Service service;
     @Autowired private EmpresaRepository  empresaRepo;
     @Autowired private OferentesRepository oferenteRepo;
-
-    // ══════════════════════════════════════════════════════
-    //  GET — Formulario de login
-    //  Spring Security redirige aquí cuando un recurso
-    //  protegido es accedido sin autenticación.
-    // ══════════════════════════════════════════════════════
+    @Autowired private PasswordEncoder passwordEncoder; // ← NUEVO
 
     @GetMapping("/login")
     public String mostrarLogin(
@@ -52,10 +32,6 @@ public class LoginController {
         return "presentation/Login/viewLogin";
     }
 
-    // ══════════════════════════════════════════════════════
-    //  GET — Vistas de registro
-    // ══════════════════════════════════════════════════════
-
     @GetMapping("/login/empresa")
     public String mostrarRegistroEmpresa() {
         return "presentation/Login/viewRegistroEmpresa";
@@ -65,12 +41,6 @@ public class LoginController {
     public String mostrarRegistroOferente() {
         return "presentation/Login/viewRegistroOferente";
     }
-
-    // ══════════════════════════════════════════════════════
-    //  POST — Registro Empresa
-    //  Crea usuario + empresa con aprobada=false.
-    //  Muestra pantalla de pendiente (no hace login automático).
-    // ══════════════════════════════════════════════════════
 
     @PostMapping("/registro/empresa")
     public String registrarEmpresa(
@@ -85,7 +55,7 @@ public class LoginController {
         try {
             Usuario nuevoUsuario = new Usuario();
             nuevoUsuario.setUsername(username);
-            nuevoUsuario.setClave(clave);
+            nuevoUsuario.setClave(passwordEncoder.encode(clave)); // ← CAMBIO
             nuevoUsuario.setTipo("EMP");
 
             Empresa nuevaEmpresa = new Empresa();
@@ -108,10 +78,6 @@ public class LoginController {
         }
     }
 
-    // ══════════════════════════════════════════════════════
-    //  POST — Registro Oferente
-    // ══════════════════════════════════════════════════════
-
     @PostMapping("/registro/oferente")
     public String registrarOferente(
             @RequestParam String username,
@@ -126,7 +92,7 @@ public class LoginController {
         try {
             Usuario nuevoUsuario = new Usuario();
             nuevoUsuario.setUsername(username);
-            nuevoUsuario.setClave(clave);
+            nuevoUsuario.setClave(passwordEncoder.encode(clave)); // ← CAMBIO
             nuevoUsuario.setTipo("OFE");
 
             Oferente nuevoOferente = new Oferente();
